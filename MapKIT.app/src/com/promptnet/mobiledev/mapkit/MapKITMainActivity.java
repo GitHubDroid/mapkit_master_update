@@ -92,7 +92,8 @@ public class MapKITMainActivity extends Activity {
         
      
         
-     // Activate some mapview options to make it smoother - optional
+        // Activate some mapview options to make it smoother - optional
+        
         mapView.getOptions().setPreloading(false);
         mapView.getOptions().setSeamlessHorizontalPan(true);
         mapView.getOptions().setTileFading(false);
@@ -123,7 +124,11 @@ public class MapKITMainActivity extends Activity {
         // set persistent raster cache limit to 100MB
         mapView.getOptions().setPersistentCacheSize(100 * 1024 * 1024);
 
-//      mapView.getOptions().setRasterTaskPoolSize(1);
+        // Increase RasterTaskPoolSize values for multi-threading and to make user experience more smooth and improve performance.
+        // The surrounding tiles are pre-fetched and loaded.
+        // But it do put some work on the processor. So use according to requirement. Normally any value between 4 to 8 are good.
+        
+        mapView.getOptions().setRasterTaskPoolSize(4);
         
  
 
