@@ -1073,10 +1073,12 @@ containing a value of this type.
         public static final int abc_textfield_searchview_right_holo_dark=0x7f020055;
         public static final int abc_textfield_searchview_right_holo_light=0x7f020056;
         public static final int background_plane=0x7f020057;
-        public static final int ic_launcher=0x7f020058;
-        public static final int olmarker=0x7f020059;
-        public static final int point=0x7f02005a;
-        public static final int sky_small=0x7f02005b;
+        public static final int gradient_background=0x7f020058;
+        public static final int ic_launcher=0x7f020059;
+        public static final int olmarker=0x7f02005a;
+        public static final int point=0x7f02005b;
+        public static final int sky_small=0x7f02005c;
+        public static final int splasher=0x7f02005d;
     }
     public static final class id {
         public static final int action_bar=0x7f05001c;
@@ -1108,6 +1110,7 @@ containing a value of this type.
         public static final int icon=0x7f05002a;
         public static final int ifRoom=0x7f05000a;
         public static final int image=0x7f050027;
+        public static final int imgLogo=0x7f050041;
         public static final int listMode=0x7f050001;
         public static final int list_item=0x7f050029;
         public static final int mainView=0x7f05003c;
@@ -1196,7 +1199,8 @@ containing a value of this type.
         public static final int abc_search_view=0x7f030016;
         public static final int abc_simple_decor=0x7f030017;
         public static final int main=0x7f030018;
-        public static final int support_simple_spinner_dropdown_item=0x7f030019;
+        public static final int splash=0x7f030019;
+        public static final int support_simple_spinner_dropdown_item=0x7f03001a;
     }
     public static final class string {
         /**  Content description for the action bar "home" affordance. [CHAR LIMIT=NONE] 
