@@ -10,14 +10,21 @@ import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import com.nutiteq.MapView;
 import com.nutiteq.components.Color;
 import com.nutiteq.components.Components;
+import com.nutiteq.components.MapPos;
 import com.nutiteq.components.Options;
 import com.nutiteq.datasources.raster.MapsforgeRasterDataSource;
+import com.nutiteq.geometry.Marker;
 import com.nutiteq.log.Log;
 import com.nutiteq.projections.EPSG3857;
 import com.nutiteq.rasterlayers.RasterLayer;
+import com.nutiteq.style.MarkerStyle;
+import com.nutiteq.ui.DefaultLabel;
+import com.nutiteq.ui.Label;
 import com.nutiteq.utils.UnscaledBitmapLoader;
+import com.nutiteq.vectorlayers.MarkerLayer;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
@@ -107,18 +114,36 @@ public class MapKITMainActivity extends Activity {
         // define online map persistent caching - optional, suggested. Default - no caching
         //  mapView.getOptions().setPersistentCachePath(this.getDatabasePath("mapcache").getPath());
         // set persistent raster cache limit to 100MB
+        
         mapView.getOptions().setPersistentCacheSize(100 * 1024 * 1024);
         
-     // Location: Scarsdale
-        // NB! it must be in base layer projection (EPSG3857), so we convert it from lat and long
-//        mapView.setFocusPoint(mapView.getLayers().getBaseLayer().getProjection().fromWgs84(-122.41666666667f, 37.76666666666f));
+        // define marker style (image, size, color)
+        Bitmap SCApointMarker = UnscaledBitmapLoader.decodeResource(getResources(), R.drawable.olmarker);
+        MarkerStyle SCAmarkerStyle = MarkerStyle.builder().setBitmap(SCApointMarker).setSize(0.5f).setColor(Color.WHITE).build();
         
+     // define label what is shown when you click on marker
+        Label SCAmarkerLabel = new DefaultLabel("Village of Scarsdale", "Village Hall");
+        
+     // define location of the marker, it must be converted to base map coordinate system
+        MapPos markerLocation = mapLayer.getProjection().fromWgs84(-73.7967994f, 40.9884312f);
+        
+     // create layer and add object to the layer, finally add layer to the map. 
+     // All overlay layers must be same projection as base layer, so we reuse it
+        
+        MarkerLayer SCAmarkerLayer = new MarkerLayer(mapLayer.getProjection());
+        SCAmarkerLayer.add(new Marker(markerLocation, SCAmarkerLabel, SCAmarkerStyle, SCAmarkerLayer));
+        mapView.getLayers().addLayer(SCAmarkerLayer);
+        
+        
+        
+        // Location: Scarsdale
+        // NB! it must be in base layer projection (EPSG3857), so we convert it from lat and long
         // Test using Centre Point: 40.9690798,-73.7635316
         mapView.setFocusPoint(mapView.getLayers().getBaseLayer().getProjection().fromWgs84(-73.7635316f, 40.9690798f));
         // rotation - 0 = north-up
         //mapView.setMapRotation(0f);
         // zoom - 0 = world, like on most web maps
-        mapView.setZoom(15.0f);
+        mapView.setZoom(17.0f);
         // tilt means perspective view. Default is 90 degrees for "normal" 2D map view, minimum allowed is 30 degrees.
        // mapView.setTilt(35.0f);
 
