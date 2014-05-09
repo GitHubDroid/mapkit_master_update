@@ -133,20 +133,15 @@ public class MapKITMainActivity extends Activity {
         MarkerLayer SCAmarkerLayer = new MarkerLayer(mapLayer.getProjection());
         SCAmarkerLayer.add(new Marker(markerLocation, SCAmarkerLabel, SCAmarkerStyle, SCAmarkerLayer));
         mapView.getLayers().addLayer(SCAmarkerLayer);
-        
-        
-        
+                
         // Location: Scarsdale
         // NB! it must be in base layer projection (EPSG3857), so we convert it from lat and long
         // Test using Centre Point: 40.9690798,-73.7635316
         mapView.setFocusPoint(mapView.getLayers().getBaseLayer().getProjection().fromWgs84(-73.7635316f, 40.9690798f));
-        // rotation - 0 = north-up
-        //mapView.setMapRotation(0f);
-        // zoom - 0 = world, like on most web maps
-        mapView.setZoom(17.0f);
-        // tilt means perspective view. Default is 90 degrees for "normal" 2D map view, minimum allowed is 30 degrees.
-       // mapView.setTilt(35.0f);
-
+        
+        // Set Initial Zoom Level at launch 
+        mapView.setZoom(14.0f);
+        
         // Increase RasterTaskPoolSize values for multi-threading and to make user experience more smooth and improve performance.
         // The surrounding tiles are pre-fetched and loaded.
         // But it do put some work on the processor. So use according to requirement. Normally any value between 4 to 8 are good.
