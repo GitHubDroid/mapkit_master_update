@@ -124,13 +124,13 @@ public class MapKITMainActivity extends Activity {
 //        mapView.setFocusPoint(mapView.getLayers().getBaseLayer().getProjection().fromWgs84(-122.41666666667f, 37.76666666666f));
         
         // Test using Centre Point: 40.9690798,-73.7635316
-        mapView.setFocusPoint(mapView.getLayers().getBaseLayer().getProjection().fromWgs84(-73.7635316, 40.9690798));
+        mapView.setFocusPoint(mapView.getLayers().getBaseLayer().getProjection().fromWgs84(-73.7635316f, 40.9690798f));
         // rotation - 0 = north-up
-        mapView.setMapRotation(0f);
+        //mapView.setMapRotation(0f);
         // zoom - 0 = world, like on most web maps
-        mapView.setZoom(7.0f);
+        mapView.setZoom(15.0f);
         // tilt means perspective view. Default is 90 degrees for "normal" 2D map view, minimum allowed is 30 degrees.
-        mapView.setTilt(35.0f);
+       // mapView.setTilt(35.0f);
 
         // Increase RasterTaskPoolSize values for multi-threading and to make user experience more smooth and improve performance.
         // The surrounding tiles are pre-fetched and loaded.
