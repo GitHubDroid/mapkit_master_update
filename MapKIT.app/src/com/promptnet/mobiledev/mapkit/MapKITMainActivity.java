@@ -42,25 +42,15 @@ public class MapKITMainActivity extends Activity {
         Log.enableAll();
         Log.setTag("mapkit");
 
-     //  Get the MapView from the Layout xml - mandatory
+        //  Get the MapView from the Layout xml - mandatory
         mapView = (MapView) findViewById(R.id.mapView);
         
-        // define new configuration holder object
-        // Optional, but very useful: restore map state during device rotation,
-        // it is saved in onRetainNonConfigurationInstance() below
-        Components retainObject = (Components) getLastNonConfigurationInstance();
-        if (retainObject != null) {
-            // just restore configuration, skip other initializations
-            mapView.setComponents(retainObject);
-            return;
-        } else {
-            // 2. create and set MapView components - mandatory
+
+            // create and set MapView components - mandatory
             Components components = new Components();
             // set stereo view: works if you rotate to landscape and device has HTC 3D or LG Real3D
             mapView.setComponents(components);
-        }
-
-
+        
         // Define base layer. Almost all online maps use EPSG3857 projection.
         // Use Offline Mapsforge Base Layer Map.
         
@@ -169,6 +159,13 @@ public class MapKITMainActivity extends Activity {
           //Stop the map - mandatory to avoid problems with app restart
           mapView.stopMapping();
           super.onStop();
+      }
+      
+      
+      //Handle device orientation change
+      @Override
+      public Object onRetainNonConfigurationInstance() {
+          return this.mapView.getComponents();
       }
 
 	
