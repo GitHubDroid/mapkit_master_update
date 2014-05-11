@@ -154,12 +154,14 @@ public class MapKITMainActivity extends Activity {
     ZoomControls zoomControls = (ZoomControls) findViewById(R.id.zoomcontrols);
     // set zoomcontrols listeners to enable zooming
     zoomControls.setOnZoomInClickListener(new View.OnClickListener() {
-        public void onClick(final View v) {
+        @Override
+		public void onClick(final View v) {
             mapView.zoomIn();
         }
     });
     zoomControls.setOnZoomOutClickListener(new View.OnClickListener() {
-        public void onClick(final View v) {
+        @Override
+		public void onClick(final View v) {
             mapView.zoomOut();
         }
     });

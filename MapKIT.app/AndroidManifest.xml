@@ -35,6 +35,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="com.promptnet.mobiledev.mapkit.HomeActivity">
+        	<intent-filter>
+                <action android:name="com.promptnet.mobiledev.mapkit.HomeActivity"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+
+        </activity>
         
         <activity android:name="com.promptnet.mobiledev.mapkit.MapKITMainActivity">
         	<intent-filter>
@@ -43,6 +50,7 @@
             </intent-filter>
 
         </activity>
+        
     </application>
 
 </manifest>

@@ -21,12 +21,13 @@ public class Splasher extends Activity {
 
         new Handler().postDelayed(new Runnable(){
 
-            public void run() {
+            @Override
+			public void run() {
 
                 // This method will be executed once the timer is over
                 // Start your app main activity
 
-                Intent i = new Intent(Splasher.this, MapKITMainActivity.class);
+                Intent i = new Intent(Splasher.this, HomeActivity.class);
 
                 startActivity(i);
 
