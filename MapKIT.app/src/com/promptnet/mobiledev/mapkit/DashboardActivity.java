@@ -31,6 +31,10 @@ public class DashboardActivity extends Activity {
 		
 		gridArray.add(new DashItem(MapViewIcon,"Map View"));
 		gridArray.add(new DashItem(SettingsIcon, "Settings"));
+//		gridArray.add(new DashItem(SearchIcon, "Search"));
+//		gridArray.add(new DashItem(AboutIcon, "About"));
+//		gridArray.add(new DashItem(ExitIcon, "Exit"));
+//		
 		
 
 		
