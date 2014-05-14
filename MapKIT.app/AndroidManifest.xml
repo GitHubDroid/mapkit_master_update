@@ -35,9 +35,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.promptnet.mobiledev.mapkit.HomeActivity">
+        <activity android:name="com.promptnet.mobiledev.mapkit.DashboardActivity">
         	<intent-filter>
-                <action android:name="com.promptnet.mobiledev.mapkit.HomeActivity"/>
+                <action android:name="com.promptnet.mobiledev.mapkit.DashboardActivity"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
 

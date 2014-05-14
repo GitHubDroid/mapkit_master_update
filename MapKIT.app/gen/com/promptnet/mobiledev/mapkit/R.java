@@ -1076,12 +1076,12 @@ containing a value of this type.
         public static final int balloon=0x7f020058;
         public static final int bg=0x7f020059;
         public static final int gradient_background=0x7f02005a;
-        public static final int home=0x7f02005b;
-        public static final int ic_launcher=0x7f02005c;
-        public static final int map=0x7f02005d;
-        public static final int needle=0x7f02005e;
-        public static final int olmarker=0x7f02005f;
-        public static final int point=0x7f020060;
+        public static final int ic_launcher=0x7f02005b;
+        public static final int map=0x7f02005c;
+        public static final int needle=0x7f02005d;
+        public static final int olmarker=0x7f02005e;
+        public static final int point=0x7f02005f;
+        public static final int settings=0x7f020060;
         public static final int sky_small=0x7f020061;
         public static final int splasher=0x7f020062;
     }
@@ -1111,7 +1111,7 @@ containing a value of this type.
         public static final int expand_activities_button=0x7f050026;
         public static final int expanded_menu=0x7f05002c;
         public static final int goButton=0x7f05003f;
-        public static final int gridView1=0x7f05003c;
+        public static final int gridView1=0x7f05003e;
         public static final int home=0x7f050014;
         public static final int homeAsUp=0x7f050005;
         public static final int houseNumberTextView=0x7f050044;
@@ -1119,8 +1119,8 @@ containing a value of this type.
         public static final int ifRoom=0x7f05000a;
         public static final int image=0x7f050027;
         public static final int imgLogo=0x7f05004a;
-        public static final int item_image=0x7f05003d;
-        public static final int item_text=0x7f05003e;
+        public static final int item_image=0x7f05003c;
+        public static final int item_text=0x7f05003d;
         public static final int listMode=0x7f050001;
         public static final int list_item=0x7f050029;
         public static final int mainView=0x7f050045;
@@ -1213,8 +1213,8 @@ containing a value of this type.
         public static final int abc_search_dropdown_item_icons_2line=0x7f030015;
         public static final int abc_search_view=0x7f030016;
         public static final int abc_simple_decor=0x7f030017;
-        public static final int home=0x7f030018;
-        public static final int home_grid=0x7f030019;
+        public static final int dash_grid=0x7f030018;
+        public static final int dashboard=0x7f030019;
         public static final int locator_main=0x7f03001a;
         public static final int main=0x7f03001b;
         public static final int splash=0x7f03001c;

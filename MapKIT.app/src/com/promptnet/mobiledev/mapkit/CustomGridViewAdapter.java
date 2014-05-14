@@ -11,13 +11,13 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class CustomGridViewAdapter extends ArrayAdapter<HomeItem> {
+public class CustomGridViewAdapter extends ArrayAdapter<DashItem> {
 	Context context;
 	int layoutResourceId;
-	ArrayList<HomeItem> data = new ArrayList<HomeItem>();
+	ArrayList<DashItem> data = new ArrayList<DashItem>();
 
 	public CustomGridViewAdapter(Context context, int layoutResourceId,
-			ArrayList<HomeItem> data) {
+			ArrayList<DashItem> data) {
 		super(context, layoutResourceId, data);
 		this.layoutResourceId = layoutResourceId;
 		this.context = context;
@@ -41,7 +41,7 @@ public class CustomGridViewAdapter extends ArrayAdapter<HomeItem> {
 			holder = (RecordHolder) row.getTag();
 		}
 
-		HomeItem item = data.get(position);
+		DashItem item = data.get(position);
 		holder.txtTitle.setText(item.getTitle());
 		holder.imageItem.setImageBitmap(item.getImage());
 		return row;
@@ -53,4 +53,6 @@ public class CustomGridViewAdapter extends ArrayAdapter<HomeItem> {
 		ImageView imageItem;
 
 	}
+	
+	
 }

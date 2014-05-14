@@ -27,7 +27,7 @@ public class Splasher extends Activity {
                 // This method will be executed once the timer is over
                 // Start your app main activity
 
-                Intent i = new Intent(Splasher.this, HomeActivity.class);
+                Intent i = new Intent(Splasher.this, DashboardActivity.class);
 
                 startActivity(i);
 

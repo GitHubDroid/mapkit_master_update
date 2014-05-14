@@ -2,11 +2,11 @@ package com.promptnet.mobiledev.mapkit;
 
 import android.graphics.Bitmap;
 
-public class HomeItem {
+public class DashItem {
 	Bitmap image;
 	String title;
 	
-	public HomeItem(Bitmap image, String title) {
+	public DashItem(Bitmap image, String title) {
 		super();
 		this.image = image;
 		this.title = title;
