@@ -43,7 +43,7 @@
 
         </activity>
         
-        <activity android:name="com.promptnet.mobiledev.mapkit.MapKITMainActivity">
+        <activity android:name="com.promptnet.mobiledev.mapkit.MapKITMapActivity">
         	<intent-filter>
                 <action android:name="com.promptnet.mobiledev.mapkit.MapKITMainActivity"/>
                 <category android:name="android.intent.category.DEFAULT"/>

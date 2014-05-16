@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import com.promptnet.mobiledev.mapkit.MapKITMainActivity;
+import com.promptnet.mobiledev.mapkit.MapKITMapActivity;
 import com.promptnet.mobiledev.mapkit.R;
 
 import android.app.Activity;
@@ -110,7 +110,7 @@ public class MapKITLocatorActivity extends Activity {
 				if(selectedHouseNumber>0){
 					double latitude = db.getLatFromAddress(selectedStreet, selectedHouseNumber);
 					double longitude = db.getLongFromAddress(selectedStreet, selectedHouseNumber);
-					Intent addressIntent = new Intent(MapKITLocatorActivity.this, MapKITMainActivity.class);
+					Intent addressIntent = new Intent(MapKITLocatorActivity.this, MapKITMapActivity.class);
 					addressIntent.putExtra("lat", latitude);
 					addressIntent.putExtra("long", longitude);
 					MapKITLocatorActivity.this.startActivity(addressIntent);					

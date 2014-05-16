@@ -1,6 +1,7 @@
 package com.promptnet.mobiledev.mapkit;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.mapsforge.map.reader.MapDatabase;
 import org.mapsforge.map.reader.header.FileOpenResult;
@@ -12,8 +13,10 @@ import com.nutiteq.components.Color;
 import com.nutiteq.components.Components;
 import com.nutiteq.components.MapPos;
 import com.nutiteq.components.Options;
+import com.nutiteq.datasources.raster.MBTilesRasterDataSource;
 import com.nutiteq.datasources.raster.MapsforgeRasterDataSource;
 import com.nutiteq.geometry.Marker;
+import com.nutiteq.layers.raster.UTFGridRasterLayer;
 import com.nutiteq.log.Log;
 import com.nutiteq.projections.EPSG3857;
 import com.nutiteq.rasterlayers.RasterLayer;
@@ -31,7 +34,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ZoomControls;
 
-public class MapKITMainActivity extends Activity {
+public class MapKITMapActivity extends Activity {
 	
 	private MapView mapView;
 
@@ -82,8 +85,24 @@ public class MapKITMainActivity extends Activity {
         RasterLayer mapLayer = new RasterLayer(dataSource, 1044);
         mapView.getLayers().setBaseLayer(mapLayer);
         
-     
+               
+        //Add MBTiles Layer to basemap
         
+        String mbtileFile = Environment.getExternalStorageDirectory().getPath()+ "/layers.mbtiles"; 
+        File mbFile = new File(Environment.getExternalStorageDirectory(), "/layers/layers.mbtiles");
+               
+        try {
+        	MBTilesRasterDataSource mbtileSource = new MBTilesRasterDataSource (new EPSG3857(), 14, 20, mbtileFile, false, this.getApplicationContext());
+        	RasterLayer mbLayer = new RasterLayer(mbtileSource, mbFile.hashCode());
+        	mapView.getLayers().addLayer(mbLayer);
+       
+        } catch (IOException e) {
+            // means usually that given .mbtiles file is not found or cannot be opened as sqlite database
+            Log.error(e.getLocalizedMessage());
+            e.printStackTrace();
+        }
+        
+             
         // Activate some mapview options to make it smoother - optional
         
         mapView.getOptions().setPreloading(false);

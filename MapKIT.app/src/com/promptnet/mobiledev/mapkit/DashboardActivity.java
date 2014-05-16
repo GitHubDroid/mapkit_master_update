@@ -59,7 +59,7 @@ public class DashboardActivity extends Activity {
                 switch (position) {
                 case 0:
 
-                    Intent i = new Intent(getApplicationContext(), MapKITMainActivity.class);
+                    Intent i = new Intent(getApplicationContext(), MapKITMapActivity.class);
                     i.putExtra("id", position);
                     startActivity(i);
                     break;
