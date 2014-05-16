@@ -28,15 +28,22 @@ public class DashboardActivity extends Activity {
 
 		Bitmap MapViewIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.map);
 		Bitmap SettingsIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.settings);
+		Bitmap SearchIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.search);
+		Bitmap NoteIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.notebook);
+		Bitmap MapDrawerIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.mapdrawer);
+		Bitmap EmailIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.mail);
+		Bitmap AboutIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.about);
+		Bitmap ExitIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.exit);
 		
 		gridArray.add(new DashItem(MapViewIcon,"Map View"));
+		gridArray.add(new DashItem(SearchIcon, "Search"));
+		gridArray.add(new DashItem(NoteIcon, "Take Note"));
+		gridArray.add(new DashItem(MapDrawerIcon, "Map Drawer"));
 		gridArray.add(new DashItem(SettingsIcon, "Settings"));
-//		gridArray.add(new DashItem(SearchIcon, "Search"));
-//		gridArray.add(new DashItem(AboutIcon, "About"));
-//		gridArray.add(new DashItem(ExitIcon, "Exit"));
-//		
-		
-
+		gridArray.add(new DashItem(EmailIcon, "Email"));
+        gridArray.add(new DashItem(AboutIcon, "About"));
+        gridArray.add(new DashItem(ExitIcon, "Exit"));
+	
 		
 		
 		gridView = (GridView) findViewById(R.id.gridView1);
@@ -45,6 +52,7 @@ public class DashboardActivity extends Activity {
 		
 		gridView.setOnItemClickListener(new OnItemClickListener() {
 
+			//Dash Board Menu Stuff
 
             public void onItemClick(AdapterView<?> parent, View v,int position, long id) {
 
