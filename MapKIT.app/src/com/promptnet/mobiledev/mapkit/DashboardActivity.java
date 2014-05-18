@@ -2,6 +2,8 @@ package com.promptnet.mobiledev.mapkit;
 
 import java.util.ArrayList;
 
+import com.promptnet.mobiledev.mapkit.locator.MapKITLocatorActivity;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -57,19 +59,20 @@ public class DashboardActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View v,int position, long id) {
 
                 switch (position) {
+                //Map View
                 case 0:
 
                     Intent i = new Intent(getApplicationContext(), MapKITMapActivity.class);
                     i.putExtra("id", position);
                     startActivity(i);
                     break;
-
-//                case 1:
-//                    //Use some different intent here
-//                    Intent j = new Intent(getApplicationContext(), MyActivity.class);
-//                    j.putExtra("id", position);
-//                    startActivity(j);
-//                    break;
+                // Search
+                case 1:
+                   
+                    Intent j = new Intent(getApplicationContext(), MapKITLocatorActivity.class);
+                    j.putExtra("id", position);
+                    startActivity(j);
+                    break;
 //                case 2:
 //                    //Use some different intent here
 //                    Intent k = new Intent(getApplicationContext(), MyActivity.class);

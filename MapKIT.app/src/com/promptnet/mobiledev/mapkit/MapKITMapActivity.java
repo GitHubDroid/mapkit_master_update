@@ -2,6 +2,9 @@ package com.promptnet.mobiledev.mapkit;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.mapsforge.map.reader.MapDatabase;
 import org.mapsforge.map.reader.header.FileOpenResult;
@@ -16,20 +19,26 @@ import com.nutiteq.components.Options;
 import com.nutiteq.datasources.raster.MBTilesRasterDataSource;
 import com.nutiteq.datasources.raster.MapsforgeRasterDataSource;
 import com.nutiteq.geometry.Marker;
-import com.nutiteq.layers.raster.UTFGridRasterLayer;
 import com.nutiteq.log.Log;
 import com.nutiteq.projections.EPSG3857;
+import com.nutiteq.projections.Projection;
 import com.nutiteq.rasterlayers.RasterLayer;
 import com.nutiteq.style.MarkerStyle;
 import com.nutiteq.ui.DefaultLabel;
 import com.nutiteq.ui.Label;
 import com.nutiteq.utils.UnscaledBitmapLoader;
+import com.nutiteq.vectorlayers.GeometryLayer;
 import com.nutiteq.vectorlayers.MarkerLayer;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.Window;
 import android.widget.ZoomControls;
@@ -37,6 +46,11 @@ import android.widget.ZoomControls;
 public class MapKITMapActivity extends Activity {
 	
 	private MapView mapView;
+	private LocationListener locationListener;
+    private GeometryLayer locationLayer; 
+    private Timer locationTimer;
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,10 +70,17 @@ public class MapKITMapActivity extends Activity {
         mapView = (MapView) findViewById(R.id.mapView);
         
 
-            // create and set MapView components - mandatory
-            Components components = new Components();
-            // set stereo view: works if you rotate to landscape and device has HTC 3D or LG Real3D
-            mapView.setComponents(components);
+        // Optional, but very useful: restore map state during device rotation,
+        // it is saved in onRetainNonConfigurationInstance() below
+        Components retainObject = (Components) getLastNonConfigurationInstance();
+        if (retainObject != null) {
+            // just restore configuration and update listener, skip other initializations
+            mapView.setComponents(retainObject);
+            return;
+        } else {
+            // 2. create and set MapView components - mandatory
+            mapView.setComponents(new Components());
+        }
         
         // Define base layer. Almost all online maps use EPSG3857 projection.
         // Use Offline Mapsforge Base Layer Map.
@@ -85,6 +106,8 @@ public class MapKITMapActivity extends Activity {
         RasterLayer mapLayer = new RasterLayer(dataSource, 1044);
         mapView.getLayers().setBaseLayer(mapLayer);
         
+        adjustMapDpi();
+        
                
         //Add MBTiles Layer to basemap
         
@@ -102,7 +125,23 @@ public class MapKITMapActivity extends Activity {
             e.printStackTrace();
         }
         
-             
+        
+        // set initial map view camera - optional. "World view" is default
+        // Location: Scarsdale
+        // NB! it must be in base layer projection (EPSG3857), so we convert it from lat and long
+                
+        mapView.setFocusPoint(mapView.getLayers().getBaseLayer().getProjection().fromWgs84(-73.7635316f, 40.9690798f));
+        
+     // rotation - 0 = north-up
+        
+        mapView.setMapRotation(0f);
+        // zoom - 0 = world, like on most web maps
+        
+     // tilt means perspective view. Default is 90 degrees for "normal" 2D map view, minimum allowed is 30 degrees.
+        mapView.setTilt(65.0f);
+        
+        // Set Initial Zoom Level at launch 
+        mapView.setZoom(14.0f);     
         // Activate some mapview options to make it smoother - optional
         
         mapView.getOptions().setPreloading(false);
@@ -136,7 +175,9 @@ public class MapKITMapActivity extends Activity {
         
         mapView.getOptions().setPersistentCacheSize(100 * 1024 * 1024);
         
+        // Add simple marker to map. 
         // define marker style (image, size, color)
+        
         Bitmap SCApointMarker = UnscaledBitmapLoader.decodeResource(getResources(), R.drawable.olmarker);
         MarkerStyle SCAmarkerStyle = MarkerStyle.builder().setBitmap(SCApointMarker).setSize(0.5f).setColor(Color.WHITE).build();
         
@@ -152,14 +193,6 @@ public class MapKITMapActivity extends Activity {
         MarkerLayer SCAmarkerLayer = new MarkerLayer(mapLayer.getProjection());
         SCAmarkerLayer.add(new Marker(markerLocation, SCAmarkerLabel, SCAmarkerStyle, SCAmarkerLayer));
         mapView.getLayers().addLayer(SCAmarkerLayer);
-                
-        // Location: Scarsdale
-        // NB! it must be in base layer projection (EPSG3857), so we convert it from lat and long
-        // Test using Centre Point: 40.9690798,-73.7635316
-        mapView.setFocusPoint(mapView.getLayers().getBaseLayer().getProjection().fromWgs84(-73.7635316f, 40.9690798f));
-        
-        // Set Initial Zoom Level at launch 
-        mapView.setZoom(14.0f);
         
         // Increase RasterTaskPoolSize values for multi-threading and to make user experience more smooth and improve performance.
         // The surrounding tiles are pre-fetched and loaded.
@@ -186,27 +219,120 @@ public class MapKITMapActivity extends Activity {
     });
     
     }
-      // it is suggested to start and stop mapping in Activity lifecycle methods, as following:
-
+          
+  //Handle device orientation change
+    @Override
+    public Object onRetainNonConfigurationInstance() {
+        Log.debug("onRetainNonConfigurationInstance");
+        return this.mapView.getComponents();
+    }
+    
+ // it is suggested to start and stop mapping in Activity lifecycle methods, as following:
+    
       @Override
       protected void onStart() {
           super.onStart();
           //Start the map - mandatory
           mapView.startMapping();
+          
+       // Create layer for location circle
+          locationLayer = new GeometryLayer(mapView.getLayers().getBaseProjection());
+          mapView.getComponents().layers.addLayer(locationLayer);
+
+          // add GPS My Location functionality 
+          final MyLocationCircle locationCircle = new MyLocationCircle(locationLayer);
+          initGps(locationCircle);
+          
+          // Run animation
+          locationTimer = new Timer();
+          locationTimer.scheduleAtFixedRate(new TimerTask() {
+              @Override
+              public void run() {
+                  locationCircle.update(mapView.getZoom());
+              }
+          }, 0, 50);
+          
       }
 
       @Override
       protected void onStop() {
+    	  
+    	// Stop animation
+          locationTimer.cancel();
+          
+          // Remove created layer
+          mapView.getComponents().layers.removeLayer(locationLayer);
+
+          // remove GPS support, otherwise we will leak memory
+          deinitGps();
+          
           //Stop the map - mandatory to avoid problems with app restart
           mapView.stopMapping();
           super.onStop();
       }
       
       
-      //Handle device orientation change
+            
       @Override
-      public Object onRetainNonConfigurationInstance() {
-          return this.mapView.getComponents();
+      protected void onDestroy() {
+          super.onDestroy();
+      }
+      
+      
+      protected void initGps(final MyLocationCircle locationCircle) {
+          final Projection proj = mapView.getLayers().getBaseLayer().getProjection();
+          
+          locationListener = new LocationListener() {
+              @Override
+              public void onLocationChanged(Location location) {
+                   locationCircle.setLocation(proj, location);
+                   locationCircle.setVisible(true);
+                       
+                   // recenter automatically to GPS point
+                   // TODO in real app it can be annoying this way, add extra control that it is done only once
+                   mapView.setFocusPoint(mapView.getLayers().getBaseProjection().fromWgs84(location.getLongitude(), location.getLatitude()));
+              }
+
+              @Override
+              public void onStatusChanged(String provider, int status, Bundle extras) {
+                  Log.debug("GPS onStatusChanged "+provider+" to "+status);
+              }
+
+              @Override
+              public void onProviderEnabled(String provider) {
+                  Log.debug("GPS onProviderEnabled");
+              }
+
+              @Override
+              public void onProviderDisabled(String provider) {
+                  Log.debug("GPS onProviderDisabled");
+              }
+          };
+          
+          LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+          List<String> providers = locationManager.getProviders(true);
+          for(String provider : providers){
+              locationManager.requestLocationUpdates(provider, 10000, 100, locationListener);
+          }
+
+      }
+      
+      protected void deinitGps() {
+          // remove listeners from location manager - otherwise we will leak memory
+          LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+          locationManager.removeUpdates(locationListener);    
+      }
+
+      // adjust zooming to DPI, so texts on rasters will be not too small
+      // useful for non-retina rasters, they would look like "digitally zoomed"
+      private void adjustMapDpi() {
+          DisplayMetrics metrics = new DisplayMetrics();
+          getWindowManager().getDefaultDisplay().getMetrics(metrics);
+          float dpi = metrics.densityDpi;
+          // following is equal to  -log2(dpi / DEFAULT_DPI)
+          float adjustment = (float) - (Math.log(dpi / DisplayMetrics.DENSITY_HIGH) / Math.log(2));
+          Log.debug("adjust DPI = "+dpi+" as zoom adjustment = "+adjustment);
+          mapView.getOptions().setTileZoomLevelBias(adjustment / 2.0f);
       }
 
 	
