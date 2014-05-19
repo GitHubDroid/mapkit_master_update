@@ -8,6 +8,8 @@
   
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
  
     <uses-sdk
         android:minSdkVersion="8"
@@ -46,6 +48,14 @@
         <activity android:name="com.promptnet.mobiledev.mapkit.MapKITMapActivity">
         	<intent-filter>
                 <action android:name="com.promptnet.mobiledev.mapkit.MapKITMainActivity"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+
+        </activity>
+        
+         <activity android:name="com.promptnet.mobiledev.mapkit.locator.MapKITLocatorActivity">
+        	<intent-filter>
+                <action android:name="com.promptnet.mobiledev.mapkit.locator.MapKITLocatorActivity"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
 

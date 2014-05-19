@@ -40,7 +40,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ZoomControls;
 
 public class MapKITMapActivity extends Activity {
@@ -49,6 +51,7 @@ public class MapKITMapActivity extends Activity {
 	private LocationListener locationListener;
     private GeometryLayer locationLayer; 
     private Timer locationTimer;
+    private Button myLocationButton;
 
 
 
@@ -58,10 +61,9 @@ public class MapKITMapActivity extends Activity {
         
      // spinner in status bar, for progress indication
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-        
-        
-        setContentView(R.layout.main);
-        
+                
+        setContentView(R.layout.mapkit_mapview);
+                
         // enable logging for troubleshooting - optional
         Log.enableAll();
         Log.setTag("mapkit");
@@ -200,7 +202,34 @@ public class MapKITMapActivity extends Activity {
         
         mapView.getOptions().setRasterTaskPoolSize(4);
         
- 
+        //My Location Button
+        
+        myLocationButton = (Button) findViewById(R.id.my_gps_location);
+        myLocationButton.setOnClickListener(new OnClickListener() {
+        	
+        	@Override 
+        	
+        	public void onClick(View v) {
+        		 // Create layer for location circle
+                locationLayer = new GeometryLayer(mapView.getLayers().getBaseProjection());
+                mapView.getComponents().layers.addLayer(locationLayer);
+
+                // add GPS My Location functionality 
+                final MyLocationCircle locationCircle = new MyLocationCircle(locationLayer);
+                initGps(locationCircle);
+                
+                // Run animation
+                locationTimer = new Timer();
+                locationTimer.scheduleAtFixedRate(new TimerTask() {
+                    @Override
+                    public void run() {
+                        locationCircle.update(mapView.getZoom());
+                    }
+                }, 0, 50);
+        		
+        	}
+        });
+      	  
 
     // zoom buttons using Android widgets, get the zoomcontrols that was defined in main.xml
     ZoomControls zoomControls = (ZoomControls) findViewById(R.id.zoomcontrols);
@@ -235,24 +264,7 @@ public class MapKITMapActivity extends Activity {
           //Start the map - mandatory
           mapView.startMapping();
           
-       // Create layer for location circle
-          locationLayer = new GeometryLayer(mapView.getLayers().getBaseProjection());
-          mapView.getComponents().layers.addLayer(locationLayer);
-
-          // add GPS My Location functionality 
-          final MyLocationCircle locationCircle = new MyLocationCircle(locationLayer);
-          initGps(locationCircle);
-          
-          // Run animation
-          locationTimer = new Timer();
-          locationTimer.scheduleAtFixedRate(new TimerTask() {
-              @Override
-              public void run() {
-                  locationCircle.update(mapView.getZoom());
-              }
-          }, 0, 50);
-          
-      }
+            }
 
       @Override
       protected void onStop() {
@@ -334,6 +346,11 @@ public class MapKITMapActivity extends Activity {
           Log.debug("adjust DPI = "+dpi+" as zoom adjustment = "+adjustment);
           mapView.getOptions().setTileZoomLevelBias(adjustment / 2.0f);
       }
+      
+      
+      
+      }
+
 
 	
-}
+
