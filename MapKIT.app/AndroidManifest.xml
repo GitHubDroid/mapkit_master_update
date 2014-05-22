@@ -60,6 +60,13 @@
             </intent-filter>
 
         </activity>
+        <activity android:name="com.promptnet.mobiledev.mapkit.locator.MapKITLocatorActivity">
+        	<intent-filter>
+                <action android:name="com.promptnet.mobiledev.mapkit.locator.MapKITLocatorActivity"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+
+        </activity>
         
     </application>
 
