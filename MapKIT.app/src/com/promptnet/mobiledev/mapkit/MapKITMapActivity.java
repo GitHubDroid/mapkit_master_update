@@ -52,7 +52,7 @@ public class MapKITMapActivity extends Activity {
 	private LocationListener locationListener;
     private GeometryLayer locationLayer; 
     private Timer locationTimer;
-    private Button myLocationButton;
+//    private Button myLocationButton;
 
 
 
@@ -211,33 +211,33 @@ public class MapKITMapActivity extends Activity {
         
         mapView.getOptions().setRasterTaskPoolSize(4);
         
-        //My Location Button
-        
-        myLocationButton = (Button) findViewById(R.id.my_gps_location);
-        myLocationButton.setOnClickListener(new OnClickListener() {
-        	
-        	@Override 
-        	
-        	public void onClick(View v) {
-        		 // Create layer for location circle
-                locationLayer = new GeometryLayer(mapView.getLayers().getBaseProjection());
-                mapView.getComponents().layers.addLayer(locationLayer);
-
-                // add GPS My Location functionality 
-                final MyLocationCircle locationCircle = new MyLocationCircle(locationLayer);
-                initGps(locationCircle);
-                
-                // Run animation
-                locationTimer = new Timer();
-                locationTimer.scheduleAtFixedRate(new TimerTask() {
-                    @Override
-                    public void run() {
-                        locationCircle.update(mapView.getZoom());
-                    }
-                }, 0, 50);
-        		
-        	}
-        });
+//        //My Location Button
+//        
+//        myLocationButton = (Button) findViewById(R.id.my_gps_location);
+//        myLocationButton.setOnClickListener(new OnClickListener() {
+//        	
+//        	@Override 
+//        	
+//        	public void onClick(View v) {
+//        		 // Create layer for location circle
+//                locationLayer = new GeometryLayer(mapView.getLayers().getBaseProjection());
+//                mapView.getComponents().layers.addLayer(locationLayer);
+//
+//                // add GPS My Location functionality 
+//                final MyLocationCircle locationCircle = new MyLocationCircle(locationLayer);
+//                initGps(locationCircle);
+//                
+//                // Run animation
+//                locationTimer = new Timer();
+//                locationTimer.scheduleAtFixedRate(new TimerTask() {
+//                    @Override
+//                    public void run() {
+//                        locationCircle.update(mapView.getZoom());
+//                    }
+//                }, 0, 50);
+//        		
+//        	}
+//        });
       	  
 
     // zoom buttons using Android widgets, get the zoomcontrols that was defined in main.xml
@@ -278,14 +278,14 @@ public class MapKITMapActivity extends Activity {
       @Override
       protected void onStop() {
     	  
-    	// Stop animation
-          locationTimer.cancel();
-          
-          // Remove created layer
-          mapView.getComponents().layers.removeLayer(locationLayer);
-
-          // remove GPS support, otherwise we will leak memory
-          deinitGps();
+//    	// Stop animation
+//          locationTimer.cancel();
+//          
+//          // Remove created layer
+//          mapView.getComponents().layers.removeLayer(locationLayer);
+//
+//          // remove GPS support, otherwise we will leak memory
+//          deinitGps();
           
           //Stop the map - mandatory to avoid problems with app restart
           mapView.stopMapping();
