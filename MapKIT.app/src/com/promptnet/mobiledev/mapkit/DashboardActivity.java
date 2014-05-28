@@ -29,8 +29,8 @@ public class DashboardActivity extends Activity {
 		//set grid view item
 
 		Bitmap MapViewIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.map);
-		Bitmap SettingsIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.settings);
 		Bitmap SearchIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.search);
+		Bitmap SettingsIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.settings);
 		Bitmap NoteIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.notebook);
 		Bitmap MapDrawerIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.mapdrawer);
 		Bitmap EmailIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.mail);
@@ -75,10 +75,41 @@ public class DashboardActivity extends Activity {
                     break;
 //                case 2:
 //                    //Use some different intent here
-//                    Intent k = new Intent(getApplicationContext(), MyActivity.class);
+//                    Intent k = new Intent(getApplicationContext(), );
 //                    k.putExtra("id", position);
 //                    startActivity(k);
-//                    break;
+//                   break;                    
+//                  case 3:
+//                  //Use some different intent here
+//                  Intent l = new Intent(getApplicationContext(), );
+//                  l.putExtra("id", position);
+//                  startActivity(l);
+//                  break;
+//                  case 4:
+//                  //Use some different intent here
+//                  Intent m = new Intent(getApplicationContext(), );
+//                  m.putExtra("id", position);
+//                  startActivity(m);
+//                  break;
+//                  case 5:
+//                  //Use some different intent here
+//                  Intent n = new Intent(getApplicationContext(), );
+//                  n.putExtra("id", position);
+//                  startActivity(n);
+//                  break;
+//                  case 6:
+//                  //Use some different intent here
+//                  Intent o = new Intent(getApplicationContext(), );
+//                  o.putExtra("id", position);
+//                  startActivity(o);
+//                  break;
+                  case 7:
+                  //Use some different intent here
+                  Intent p = new Intent(Intent.ACTION_MAIN);
+                  p.putExtra("id", position);
+                  startActivity(p);
+                  finish();
+                  break;
                 
                 default:
                     break;
