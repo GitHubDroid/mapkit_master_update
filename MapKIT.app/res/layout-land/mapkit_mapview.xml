@@ -17,6 +17,17 @@
     android:layout_alignParentRight="true" 
     android:layout_alignParentBottom="true" 
     />
+<<<<<<< HEAD
+=======
+<ImageButton
+  android:id="@+id/my_gps_location"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:layout_alignParentRight="true"
+  android:layout_alignParentTop="true"
+  android:src="@android:drawable/ic_menu_mylocation" >
+</ImageButton>
+>>>>>>> 6a880a518e2b20ac3e60288f0af1f78a0dab3c31
 
 <SeekBar
     android:id="@+id/seekBar"

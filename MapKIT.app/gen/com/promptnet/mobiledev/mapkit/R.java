@@ -38,17 +38,31 @@ public final class R {
         public static final int goButton=0x7f070003;
         public static final int gridView1=0x7f070002;
         public static final int houseNumberTextView=0x7f070008;
+<<<<<<< HEAD
         public static final int imgLogo=0x7f07000e;
+=======
+        public static final int imgLogo=0x7f07000f;
+>>>>>>> 6a880a518e2b20ac3e60288f0af1f78a0dab3c31
         public static final int item_image=0x7f070000;
         public static final int item_text=0x7f070001;
         public static final int mainView=0x7f070009;
         public static final int mapView=0x7f07000a;
+<<<<<<< HEAD
         public static final int menuAbout=0x7f07000f;
         public static final int numberSpinner=0x7f070006;
         public static final int seekBar=0x7f07000c;
         public static final int streetNameTextField=0x7f070005;
         public static final int streetnameTextView=0x7f070007;
         public static final int textView=0x7f07000d;
+=======
+        public static final int menuAbout=0x7f070010;
+        public static final int my_gps_location=0x7f07000c;
+        public static final int numberSpinner=0x7f070006;
+        public static final int seekBar=0x7f07000d;
+        public static final int streetNameTextField=0x7f070005;
+        public static final int streetnameTextView=0x7f070007;
+        public static final int textView=0x7f07000e;
+>>>>>>> 6a880a518e2b20ac3e60288f0af1f78a0dab3c31
         public static final int textView2=0x7f070004;
         public static final int zoomcontrols=0x7f07000b;
     }

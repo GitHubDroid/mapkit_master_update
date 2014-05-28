@@ -16,6 +16,7 @@ import com.nutiteq.components.Color;
 import com.nutiteq.components.Components;
 import com.nutiteq.components.MapPos;
 import com.nutiteq.components.Options;
+import com.nutiteq.components.Range;
 import com.nutiteq.datasources.raster.MBTilesRasterDataSource;
 import com.nutiteq.datasources.raster.MapsforgeRasterDataSource;
 import com.nutiteq.geometry.Marker;
@@ -49,8 +50,13 @@ public class MapKITMapActivity extends Activity {
 	
 	private MapView mapView;
 	private LocationListener locationListener;
+<<<<<<< HEAD
 //    private GeometryLayer locationLayer; 
 //    private Timer locationTimer;
+=======
+    private GeometryLayer locationLayer; 
+    private Timer locationTimer;
+>>>>>>> 6a880a518e2b20ac3e60288f0af1f78a0dab3c31
 //    private Button myLocationButton;
 
 
@@ -117,10 +123,13 @@ public class MapKITMapActivity extends Activity {
         File mbFile = new File(Environment.getExternalStorageDirectory(), "/layers/layers.mbtiles");
                
         try {
-        	MBTilesRasterDataSource mbtileSource = new MBTilesRasterDataSource (new EPSG3857(), 14, 20, mbtileFile, false, this.getApplicationContext());
+        	MBTilesRasterDataSource mbtileSource = new MBTilesRasterDataSource (new EPSG3857(), 0, 20, mbtileFile, false, this.getApplicationContext());
         	RasterLayer mbLayer = new RasterLayer(mbtileSource, mbFile.hashCode());
+        	
+        	//Set mbtile layer zoom constraint from zoom level 14 to level 20
+        	mbLayer.setVisibleZoomRange(new Range(14, 20));
         	mapView.getLayers().addLayer(mbLayer);
-       
+        	
         } catch (IOException e) {
             // means usually that given .mbtiles file is not found or cannot be opened as sqlite database
             Log.error(e.getLocalizedMessage());
@@ -143,7 +152,8 @@ public class MapKITMapActivity extends Activity {
         mapView.setTilt(65.0f);
         
         // Set Initial Zoom Level at launch 
-        mapView.setZoom(14.0f);     
+        mapView.setZoom(13.0f);     
+        
         // Activate some mapview options to make it smoother - optional
         
         mapView.getOptions().setPreloading(false);
@@ -193,6 +203,10 @@ public class MapKITMapActivity extends Activity {
      // All overlay layers must be same projection as base layer, so we reuse it
         
         MarkerLayer SCAmarkerLayer = new MarkerLayer(mapLayer.getProjection());
+        
+        // Add SCAmarker Layer zoom constraint from zoom level 14 to 20
+        SCAmarkerLayer.setVisibleZoomRange(new Range(14, 20));
+        
         SCAmarkerLayer.add(new Marker(markerLocation, SCAmarkerLabel, SCAmarkerStyle, SCAmarkerLayer));
         mapView.getLayers().addLayer(SCAmarkerLayer);
         
@@ -202,11 +216,19 @@ public class MapKITMapActivity extends Activity {
         
         mapView.getOptions().setRasterTaskPoolSize(4);
         
+<<<<<<< HEAD
         //My Location Button
         
 //        myLocationButton = (Button) findViewById(R.id.my_gps_location);
 //        myLocationButton.setOnClickListener(new OnClickListener() {
         	
+=======
+//        //My Location Button
+//        
+//        myLocationButton = (Button) findViewById(R.id.my_gps_location);
+//        myLocationButton.setOnClickListener(new OnClickListener() {
+//        	
+>>>>>>> 6a880a518e2b20ac3e60288f0af1f78a0dab3c31
 //        	@Override 
 //        	
 //        	public void onClick(View v) {
