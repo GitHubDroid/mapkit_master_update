@@ -2,14 +2,20 @@ package com.promptnet.mobiledev.mapkit;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import org.mapsforge.map.reader.MapDatabase;
 import org.mapsforge.map.reader.header.FileOpenResult;
 import org.mapsforge.map.rendertheme.InternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
+
+import android.app.Activity;
+import android.graphics.Bitmap;
+import android.os.Bundle;
+import android.os.Environment;
+import android.util.DisplayMetrics;
+import android.view.View;
+import android.view.Window;
+import android.widget.ZoomControls;
 
 import com.nutiteq.MapView;
 import com.nutiteq.components.Color;
@@ -22,41 +28,25 @@ import com.nutiteq.datasources.raster.MapsforgeRasterDataSource;
 import com.nutiteq.geometry.Marker;
 import com.nutiteq.log.Log;
 import com.nutiteq.projections.EPSG3857;
-import com.nutiteq.projections.Projection;
 import com.nutiteq.rasterlayers.RasterLayer;
 import com.nutiteq.style.MarkerStyle;
 import com.nutiteq.ui.DefaultLabel;
 import com.nutiteq.ui.Label;
 import com.nutiteq.utils.UnscaledBitmapLoader;
-import com.nutiteq.vectorlayers.GeometryLayer;
 import com.nutiteq.vectorlayers.MarkerLayer;
-
-import android.app.Activity;
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.Bundle;
-import android.os.Environment;
-import android.util.DisplayMetrics;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.Window;
-import android.widget.Button;
-import android.widget.ZoomControls;
+//import java.util.List;
+//import java.util.Timer;
+//import java.util.TimerTask;
 
 public class MapKITMapActivity extends Activity {
 	
 	private MapView mapView;
-	private LocationListener locationListener;
-<<<<<<< HEAD
+	private MarkerLayer searchMarkerLayer;
+	private static Marker searchResult;
+	
+//	  private LocationListener locationListener;
 //    private GeometryLayer locationLayer; 
 //    private Timer locationTimer;
-=======
-    private GeometryLayer locationLayer; 
-    private Timer locationTimer;
->>>>>>> 6a880a518e2b20ac3e60288f0af1f78a0dab3c31
 //    private Button myLocationButton;
 
 
@@ -212,33 +202,26 @@ public class MapKITMapActivity extends Activity {
         
         // Increase RasterTaskPoolSize values for multi-threading and to make user experience more smooth and improve performance.
         // The surrounding tiles are pre-fetched and loaded.
-        // But it do put some work on the processor. So use according to requirement. Normally any value between 4 to 8 are good.
+        // But it does put some work on the processor. So use according to requirement. Normally any value between 4 to 8 are good.
         
         mapView.getOptions().setRasterTaskPoolSize(4);
         
-<<<<<<< HEAD
         //My Location Button
         
 //        myLocationButton = (Button) findViewById(R.id.my_gps_location);
 //        myLocationButton.setOnClickListener(new OnClickListener() {
         	
-=======
-//        //My Location Button
-//        
-//        myLocationButton = (Button) findViewById(R.id.my_gps_location);
-//        myLocationButton.setOnClickListener(new OnClickListener() {
-//        	
->>>>>>> 6a880a518e2b20ac3e60288f0af1f78a0dab3c31
+
 //        	@Override 
 //        	
 //        	public void onClick(View v) {
 //        		 // Create layer for location circle
 //                locationLayer = new GeometryLayer(mapView.getLayers().getBaseProjection());
-//                mapView.getComponents().layers.addLayer(locationLayer);
+//               mapView.getComponents().layers.addLayer(locationLayer);
 //
 //                // add GPS My Location functionality 
 //                final MyLocationCircle locationCircle = new MyLocationCircle(locationLayer);
-//                initGps(locationCircle);
+//               initGps(locationCircle);
 //                
 //                // Run animation
 //                locationTimer = new Timer();
@@ -249,8 +232,8 @@ public class MapKITMapActivity extends Activity {
 //                    }
 //                }, 0, 50);
 //        		
-//        	}
-//        });
+//       	}
+//       });
       	  
 
     // zoom buttons using Android widgets, get the zoomcontrols that was defined in main.xml
@@ -269,6 +252,13 @@ public class MapKITMapActivity extends Activity {
         }
     });
     
+    // create layer for search result 
+    searchMarkerLayer = new MarkerLayer(mapView.getLayers().getBaseLayer().getProjection());
+    mapView.getLayers().addLayer(searchMarkerLayer);
+    
+ // open search right away
+ // search class is defined in AndroidManifest.xml as android.intent.action.SEARCH
+//    onSearchRequested();
     }
           
   //Handle device orientation change
@@ -312,50 +302,73 @@ public class MapKITMapActivity extends Activity {
           super.onDestroy();
       }
       
-      
-      protected void initGps(final MyLocationCircle locationCircle) {
-          final Projection proj = mapView.getLayers().getBaseLayer().getProjection();
-          
-          locationListener = new LocationListener() {
-              @Override
-              public void onLocationChanged(Location location) {
-                   locationCircle.setLocation(proj, location);
-                   locationCircle.setVisible(true);
-                       
-                   // recenter automatically to GPS point
-                   // TODO in real app it can be annoying this way, add extra control that it is done only once
-                   mapView.setFocusPoint(mapView.getLayers().getBaseProjection().fromWgs84(location.getLongitude(), location.getLatitude()));
-              }
+      @Override 
+      protected void onResume() {
 
-              @Override
-              public void onStatusChanged(String provider, int status, Bundle extras) {
-                  Log.debug("GPS onStatusChanged "+provider+" to "+status);
-              }
+          super.onResume();
+          Log.debug("onResume");
 
-              @Override
-              public void onProviderEnabled(String provider) {
-                  Log.debug("GPS onProviderEnabled");
+          if (searchResult != null && searchResult.getMapPos().x != 0) {
+              // recenter to searchResult
+              Log.debug("Add search result and recenter to it: ");
+              if (searchResult.getLayer() == null) {
+                  searchMarkerLayer.add(searchResult);
               }
-
-              @Override
-              public void onProviderDisabled(String provider) {
-                  Log.debug("GPS onProviderDisabled");
-              }
-          };
-          
-          LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-          List<String> providers = locationManager.getProviders(true);
-          for(String provider : providers){
-              locationManager.requestLocationUpdates(provider, 10000, 100, locationListener);
+              mapView.setFocusPoint(searchResult.getMapPos());
+              //searchResult.setVisible(true);
+              mapView.selectVectorElement(searchResult);
           }
+      }
 
+      public static void setSearchResult(Marker marker) {
+          Log.debug("Search result selected: " + marker.getMapPos());
+          searchResult = marker;
       }
       
-      protected void deinitGps() {
-          // remove listeners from location manager - otherwise we will leak memory
-          LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-          locationManager.removeUpdates(locationListener);    
-      }
+      
+//      protected void initGps(final MyLocationCircle locationCircle) {
+//          final Projection proj = mapView.getLayers().getBaseLayer().getProjection();
+//          
+//          locationListener = new LocationListener() {
+//              @Override
+//              public void onLocationChanged(Location location) {
+//                   locationCircle.setLocation(proj, location);
+//                   locationCircle.setVisible(true);
+//                       
+//                   // recenter automatically to GPS point
+//                   // TODO in real app it can be annoying this way, add extra control that it is done only once
+//                   mapView.setFocusPoint(mapView.getLayers().getBaseProjection().fromWgs84(location.getLongitude(), location.getLatitude()));
+//              }
+//
+//              @Override
+//              public void onStatusChanged(String provider, int status, Bundle extras) {
+//                  Log.debug("GPS onStatusChanged "+provider+" to "+status);
+//              }
+//
+//              @Override
+//              public void onProviderEnabled(String provider) {
+//                  Log.debug("GPS onProviderEnabled");
+//              }
+//
+//              @Override
+//              public void onProviderDisabled(String provider) {
+//                  Log.debug("GPS onProviderDisabled");
+//              }
+//          };
+//          
+//          LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+//          List<String> providers = locationManager.getProviders(true);
+//          for(String provider : providers){
+//              locationManager.requestLocationUpdates(provider, 10000, 100, locationListener);
+//          }
+//
+//      }
+//      
+//      protected void deinitGps() {
+//          // remove listeners from location manager - otherwise we will leak memory
+//          LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+//          locationManager.removeUpdates(locationListener);    
+//      }
 
       // adjust zooming to DPI, so texts on rasters will be not too small
       // useful for non-retina rasters, they would look like "digitally zoomed"
@@ -367,6 +380,10 @@ public class MapKITMapActivity extends Activity {
           float adjustment = (float) - (Math.log(dpi / DisplayMetrics.DENSITY_HIGH) / Math.log(2));
           Log.debug("adjust DPI = "+dpi+" as zoom adjustment = "+adjustment);
           mapView.getOptions().setTileZoomLevelBias(adjustment / 2.0f);
+      }
+      
+      public MapView getMapView() {
+          return mapView;
       }
       
       
