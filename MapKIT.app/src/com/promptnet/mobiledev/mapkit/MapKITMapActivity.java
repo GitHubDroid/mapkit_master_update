@@ -22,7 +22,6 @@ import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ZoomControls;
 
@@ -55,7 +54,7 @@ public class MapKITMapActivity extends Activity {
 	private LocationListener locationListener;
 	private GeometryLayer locationLayer; 
 	private Timer locationTimer;
-	private Button myLocationButton;
+    private ImageButton myLocationButton;
 	
 
     @Override
@@ -214,7 +213,8 @@ public class MapKITMapActivity extends Activity {
         
         mapView.getOptions().setRasterTaskPoolSize(4);
         
-    
+    //My location button stuff
+        
     ImageButton myLocationButton = (ImageButton) findViewById(R.id.my_gps_location);
     myLocationButton.setOnClickListener(new View.OnClickListener() {
         @Override 
