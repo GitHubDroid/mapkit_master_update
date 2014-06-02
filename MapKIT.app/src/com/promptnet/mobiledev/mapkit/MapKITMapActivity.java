@@ -23,6 +23,7 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ZoomControls;
 
 import com.nutiteq.MapView;
@@ -214,10 +215,10 @@ public class MapKITMapActivity extends Activity {
         mapView.getOptions().setRasterTaskPoolSize(4);
         
     
-    myLocationButton = (Button) findViewById(R.id.my_gps_location);
+    ImageButton myLocationButton = (ImageButton) findViewById(R.id.my_gps_location);
     myLocationButton.setOnClickListener(new View.OnClickListener() {
         @Override 
-        	public void onClick(View v) {
+        	public void onClick(final View v) {
         		
         	// Create layer for location circle
             locationLayer = new GeometryLayer(mapView.getLayers().getBaseProjection());
