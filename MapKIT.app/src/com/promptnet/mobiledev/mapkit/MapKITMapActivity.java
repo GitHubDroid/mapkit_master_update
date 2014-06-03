@@ -55,7 +55,7 @@ public class MapKITMapActivity extends Activity {
 	private LocationListener locationListener;
 	private GeometryLayer locationLayer; 
 	private Timer locationTimer;
-	private Button myLocationButton;
+    private ImageButton myLocationButton;
 	
 
     @Override
@@ -214,11 +214,13 @@ public class MapKITMapActivity extends Activity {
         
         mapView.getOptions().setRasterTaskPoolSize(4);
         
-    
+
+    //My location button stuff
+        
     ImageButton myLocationButton = (ImageButton) findViewById(R.id.my_gps_location);
     myLocationButton.setOnClickListener(new View.OnClickListener() {
         @Override 
-        	public void onClick(View v) {
+        	public void onClick(final View v) {
         		
         	// Create layer for location circle
             locationLayer = new GeometryLayer(mapView.getLayers().getBaseProjection());
