@@ -3,6 +3,7 @@ package com.promptnet.mobiledev.mapkit;
 import java.util.ArrayList;
 
 import com.promptnet.mobiledev.mapkit.locator.MapKITLocatorActivity;
+import com.promptnet.mobiledev.mapkit.track.GPSTrackingActivity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -38,7 +39,7 @@ public class DashboardActivity extends Activity {
 		Bitmap ExitIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.exit);
 		
 		gridArray.add(new DashItem(MapViewIcon,"Map View"));
-		gridArray.add(new DashItem(SearchIcon, "Search"));
+		gridArray.add(new DashItem(SearchIcon, "GPS Info"));
 		gridArray.add(new DashItem(NoteIcon, "Take Note"));
 		gridArray.add(new DashItem(MapDrawerIcon, "Map Drawer"));
 		gridArray.add(new DashItem(SettingsIcon, "Settings"));
@@ -69,7 +70,7 @@ public class DashboardActivity extends Activity {
                 // Search
                 case 1:
                    
-                    Intent j = new Intent(getApplicationContext(), MapKITLocatorActivity.class);
+                    Intent j = new Intent(getApplicationContext(), GPSTrackingActivity.class);
                     j.putExtra("id", position);
                     startActivity(j);
                     break;

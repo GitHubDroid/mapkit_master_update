@@ -60,6 +60,13 @@
             </intent-filter>
 
         </activity>
+                <activity android:name="com.promptnet.mobiledev.mapkit.track.GPSTrackingActivity">
+        	<intent-filter>
+                <action android:name="com.promptnet.mobiledev.mapkit.track.GPSTrackingActivity"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+
+        </activity>
                 
         <activity
     android:name="com.promptnet.mobiledev.mapkit.mapquest.MapQuestSearchQuery"
