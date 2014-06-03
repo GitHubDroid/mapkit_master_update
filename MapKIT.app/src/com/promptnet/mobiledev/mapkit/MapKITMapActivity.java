@@ -21,8 +21,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ZoomControls;
 
@@ -55,14 +55,39 @@ public class MapKITMapActivity extends Activity {
 	private LocationListener locationListener;
 	private GeometryLayer locationLayer; 
 	private Timer locationTimer;
-    private ImageButton myLocationButton;
+    ImageButton myLocationButton;
 	
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-     // spinner in status bar, for progress indication
+        //My location button stuff
+        
+        ImageButton myLocationButton = (ImageButton) findViewById(R.id.my_gps_location);
+        
+        myLocationButton.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+          		
+          	// Create layer for location circle
+             locationLayer = new GeometryLayer(mapView.getLayers().getBaseProjection());
+             mapView.getComponents().layers.addLayer(locationLayer);
+             // add GPS My Location functionality 
+             final MyLocationCircle locationCircle = new MyLocationCircle(locationLayer);
+             
+             initGps(locationCircle);
+             // Run animation
+             locationTimer = new Timer();
+             locationTimer.scheduleAtFixedRate(new TimerTask() {
+                 @Override
+                 public void run() {
+                     locationCircle.update(mapView.getZoom());
+                 }
+             }, 0, 50);
+     		
+    	}
+    });
+    
+        // spinner in status bar, for progress indication
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         
                 
@@ -217,29 +242,7 @@ public class MapKITMapActivity extends Activity {
 
     //My location button stuff
         
-    ImageButton myLocationButton = (ImageButton) findViewById(R.id.my_gps_location);
-    myLocationButton.setOnClickListener(new View.OnClickListener() {
-        @Override 
-        	public void onClick(final View v) {
-        		
-        	// Create layer for location circle
-            locationLayer = new GeometryLayer(mapView.getLayers().getBaseProjection());
-           mapView.getComponents().layers.addLayer(locationLayer);
-           // add GPS My Location functionality 
-           final MyLocationCircle locationCircle = new MyLocationCircle(locationLayer);
-           
-           initGps(locationCircle);
-           // Run animation
-           locationTimer = new Timer();
-           locationTimer.scheduleAtFixedRate(new TimerTask() {
-               @Override
-               public void run() {
-                   locationCircle.update(mapView.getZoom());
-               }
-           }, 0, 50);
-   		
-  	}
-  });
+     
         	 	
 	// zoom buttons using Android widgets, get the zoomcontrols that was defined in main.xml
     ZoomControls zoomControls = (ZoomControls) findViewById(R.id.zoomcontrols);
