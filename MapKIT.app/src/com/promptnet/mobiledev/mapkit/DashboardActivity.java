@@ -105,7 +105,7 @@ public class DashboardActivity extends Activity {
 //                  break;
                   case 7:
                   //Exit Button
-                  Intent p = new Intent(Intent.ACTION_MAIN);
+                  Intent p = new Intent();
                   p.putExtra("id", position);
                   startActivity(p);
                   finish();
