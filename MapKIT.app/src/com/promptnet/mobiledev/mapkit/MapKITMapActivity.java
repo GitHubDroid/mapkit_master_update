@@ -21,7 +21,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.ZoomControls;
@@ -50,8 +49,6 @@ import com.nutiteq.vectorlayers.MarkerLayer;
 public class MapKITMapActivity extends Activity {
 	
 	private MapView mapView;
-	private MarkerLayer searchMarkerLayer;
-	private static Marker searchResult;
 	private LocationListener locationListener;
 	private GeometryLayer locationLayer; 
 	private Timer locationTimer;
@@ -69,9 +66,7 @@ public class MapKITMapActivity extends Activity {
         locationLayer = new GeometryLayer(mapView.getLayers().getBaseProjection());
         mapView.getComponents().layers.addLayer(locationLayer);
 
-       
-    
-   
+         
         // spinner in status bar, for progress indication
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         
@@ -192,10 +187,6 @@ public class MapKITMapActivity extends Activity {
         mapView.getOptions().setTextureMemoryCacheSize(20 * 1024 * 1024);
         mapView.getOptions().setCompressedMemoryCacheSize(8 * 1024 * 1024);
 
-        // define online map persistent caching - optional, suggested. Default - no caching
-        //  mapView.getOptions().setPersistentCachePath(this.getDatabasePath("mapcache").getPath());
-        // set persistent raster cache limit to 100MB
-        
         mapView.getOptions().setPersistentCacheSize(100 * 1024 * 1024);
         
         // Add simple marker to map. 
@@ -262,18 +253,8 @@ public class MapKITMapActivity extends Activity {
     } });
     	
     
-    
-//    // create layer for search result 
-//    searchMarkerLayer = new MarkerLayer(mapView.getLayers().getBaseLayer().getProjection());
-//    mapView.getLayers().addLayer(searchMarkerLayer);
     }
 
-
- // open search right away
- // search class is defined in AndroidManifest.xml as android.intent.action.SEARCH
-//    onSearchRequested();
-    
-          
   //Handle device orientation change
     @Override
     public Object onRetainNonConfigurationInstance() {
@@ -343,9 +324,7 @@ public class MapKITMapActivity extends Activity {
 
           // remove GPS support, otherwise we will leak memory
           deinitGps();
-
-    	  
-
+  	  
           mapView.stopMapping();
           super.onStop();
       }
@@ -357,31 +336,7 @@ public class MapKITMapActivity extends Activity {
           super.onDestroy();
       }
       
-      @Override 
-      protected void onResume() {
-
-          super.onResume();
-          Log.debug("onResume");
-
-          if (searchResult != null && searchResult.getMapPos().x != 0) {
-              // recenter to searchResult
-              Log.debug("Add search result and recenter to it: ");
-              if (searchResult.getLayer() == null) {
-                  searchMarkerLayer.add(searchResult);
-              }
-              mapView.setFocusPoint(searchResult.getMapPos());
-              //searchResult.setVisible(true);
-              mapView.selectVectorElement(searchResult);
-          }
-      }
-
-      public static void setSearchResult(Marker marker) {
-          Log.debug("Search result selected: " + marker.getMapPos());
-          searchResult = marker;
-      }
-      
-
-      
+            
       protected void deinitGps() {
           // remove listeners from location manager - otherwise we will leak memory
           LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);

@@ -68,29 +68,7 @@
 
         </activity>
                 
-        <activity
-    android:name="com.promptnet.mobiledev.mapkit.mapquest.MapQuestSearchQuery"
-    android:exported="false">
-	    <intent-filter>
-	        <action android:name="android.intent.action.SEARCH" />
-	        <category android:name="android.intent.category.DEFAULT" />
-	    </intent-filter>
-	
-	    <meta-data
-	        android:name="android.app.searchable"
-	        android:resource="@xml/searchable" />
-	</activity>
-	<provider
-           android:name="com.promptnet.mobiledev.mapkit.mapquest.SearchSuggestionProvider"
-           android:authorities="com.promptnet.osm"
-	       android:exported="false">
-	</provider>
-    
-	<activity android:name=".activity.MapKITMapActivity">
-	                <meta-data
-                android:name="android.app.default_searchable"
-                android:value="com.promptnet.mobiledev.mapkit.mapquest.MapQuestSearchQuery" />
-	</activity>
+
         
     </application>
 
