@@ -43,6 +43,7 @@
         <activity android:name="com.promptnet.mobiledev.mapkit.track.GPSInfo"></activity>
         <activity android:name="com.promptnet.mobiledev.fragmentmap.FragmentMapActivity"></activity>
         <activity android:name="com.promptnet.mobiledev.fragmentmap.InfoActivity"></activity>
+        <activity android:name="com.promptnet.mobiledev.mapkit.GPSLocation"></activity>
         
         <activity
     android:name="com.promptnet.mobiledev.mapquest.MapQuestSearchQuery"
