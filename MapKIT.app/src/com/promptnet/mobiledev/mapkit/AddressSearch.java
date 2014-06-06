@@ -1,22 +1,42 @@
 package com.promptnet.mobiledev.mapkit;
 
+import java.io.File;
+import java.io.IOException;
+
 import android.app.Activity;
+import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.DisplayMetrics;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ZoomControls;
 
 import com.nutiteq.MapView;
 import com.nutiteq.components.Components;
+import com.nutiteq.components.MapPos;
 import com.nutiteq.components.Options;
+import com.nutiteq.components.Range;
+import com.nutiteq.datasources.raster.MBTilesRasterDataSource;
 import com.nutiteq.geometry.Marker;
 import com.nutiteq.log.Log;
 import com.nutiteq.projections.EPSG3857;
+import com.nutiteq.projections.Projection;
 import com.nutiteq.rasterdatasources.HTTPRasterDataSource;
 import com.nutiteq.rasterdatasources.RasterDataSource;
 import com.nutiteq.rasterlayers.RasterLayer;
+import com.nutiteq.renderprojections.RenderProjection;
+import com.nutiteq.style.MarkerStyle;
+import com.nutiteq.ui.DefaultLabel;
+import com.nutiteq.ui.Label;
 import com.nutiteq.utils.UnscaledBitmapLoader;
 import com.nutiteq.vectorlayers.MarkerLayer;
+import com.promptnet.mobiledev.mapkit.maplisteners.MyLocationMapEventListener;
 
 /**
  * Address search / Geocoding sample.
@@ -47,6 +67,8 @@ public class AddressSearch extends Activity {
     private static Marker searchResult;
     private MapView mapView;
     private MarkerLayer searchMarkerLayer;
+    private LocationListener locationListener;
+    ImageButton myLocationButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,11 +88,20 @@ public class AddressSearch extends Activity {
         if (retainObject != null) {
             // just restore configuration, skip other initializations
             mapView.setComponents(retainObject);
+            
+         // add map event listener
+            MyLocationMapEventListener mapListener = new MyLocationMapEventListener(this, mapView);
+            mapView.getOptions().setMapListener(mapListener);
             return;
         } else {
-            // 2. create and set MapView components - mandatory
+          
+          // 2. create and set MapView components - mandatory
             Components components = new Components();
             mapView.setComponents(components);
+            
+            // add map event listener
+            MyLocationMapEventListener mapListener = new MyLocationMapEventListener(this, mapView);
+            mapView.getOptions().setMapListener(mapListener);
         }
 
 
@@ -80,16 +111,37 @@ public class AddressSearch extends Activity {
         RasterDataSource dataSource = new HTTPRasterDataSource(new EPSG3857(), 0, 18, "http://otile1.mqcdn.com/tiles/1.0.0/osm/{zoom}/{x}/{y}.png");
         RasterLayer mapLayer = new RasterLayer(dataSource, 0);
         mapView.getLayers().setBaseLayer(mapLayer);
+        
+        adjustMapDpi();
 
-        // Location: Estonia
-        mapView.setFocusPoint(mapView.getLayers().getBaseLayer().getProjection().fromWgs84(24.5f, 58.3f));
+ //Add MBTiles Layer to basemap
+        
+        String mbtileFile = Environment.getExternalStorageDirectory().getPath()+ "/layers.mbtiles"; 
+        File mbFile = new File(Environment.getExternalStorageDirectory(), "/layers/layers.mbtiles");
+               
+        try {
+        	MBTilesRasterDataSource mbtileSource = new MBTilesRasterDataSource (new EPSG3857(), 0, 20, mbtileFile, false, this.getApplicationContext());
+        	RasterLayer mbLayer = new RasterLayer(mbtileSource, mbFile.hashCode());
+        	
+        	//Set mbtile layer zoom constraint from zoom level 14 to level 20
+        	mbLayer.setVisibleZoomRange(new Range(14, 20));
+        	mapView.getLayers().addLayer(mbLayer);
+        	
+        } catch (IOException e) {
+            // means usually that given .mbtiles file is not found or cannot be opened as sqlite database
+            Log.error(e.getLocalizedMessage());
+            e.printStackTrace();
+        }
+        
+     // Location: Scarsdale
+        mapView.setFocusPoint(mapView.getLayers().getBaseLayer().getProjection().fromWgs84(-73.7635316f, 40.9690798f));
 
         // rotation - 0 = north-up
         mapView.setMapRotation(0f);
         // zoom - 0 = world, like on most web maps
-        mapView.setZoom(5.0f);
+        mapView.setZoom(14.0f);
         // tilt means perspective view. Default is 90 degrees for "normal" 2D map view, minimum allowed is 30 degrees.
-        mapView.setTilt(90.0f);
+        mapView.setTilt(65.0f);
 
         // Activate some mapview options to make it smoother - optional
         mapView.getOptions().setPreloading(true);
@@ -121,6 +173,35 @@ public class AddressSearch extends Activity {
         mapView.getOptions().setPersistentCachePath(this.getDatabasePath("mapcache").getPath());
         // set persistent raster cache limit to 100MB
         mapView.getOptions().setPersistentCacheSize(100 * 1024 * 1024);
+        
+        // Add simple marker to map. 
+        // define marker style (image, size, color)
+        
+        Bitmap SCApointMarker = UnscaledBitmapLoader.decodeResource(getResources(), R.drawable.olmarker);
+        MarkerStyle SCAmarkerStyle = MarkerStyle.builder().setBitmap(SCApointMarker).setSize(0.5f).setColor(Color.WHITE).build();
+        
+     // define label what is shown when you click on marker
+        Label SCAmarkerLabel = new DefaultLabel("Village of Scarsdale", "Village Hall");
+        
+     // define location of the marker, it must be converted to base map coordinate system
+        MapPos markerLocation = mapLayer.getProjection().fromWgs84(-73.7967994f, 40.9884312f);
+        
+     // create layer and add object to the layer, finally add layer to the map. 
+     // All overlay layers must be same projection as base layer, so we reuse it
+        
+        MarkerLayer SCAmarkerLayer = new MarkerLayer(mapLayer.getProjection());
+        
+        // Add SCAmarker Layer zoom constraint from zoom level 14 to 20
+        SCAmarkerLayer.setVisibleZoomRange(new Range(14, 20));
+        
+        SCAmarkerLayer.add(new Marker(markerLocation, SCAmarkerLabel, SCAmarkerStyle, SCAmarkerLayer));
+        mapView.getLayers().addLayer(SCAmarkerLayer);
+        
+        // Increase RasterTaskPoolSize values for multi-threading and to make user experience more smooth and improve performance.
+        // The surrounding tiles are pre-fetched and loaded.
+        // But it does put some work on the processor. So use according to requirement. Normally any value between 4 to 8 are good.
+        
+        mapView.getOptions().setRasterTaskPoolSize(4);
 
         // 4. zoom buttons using Android widgets - optional
         // get the zoomcontrols that was defined in main.xml
@@ -138,6 +219,16 @@ public class AddressSearch extends Activity {
                 mapView.zoomOut();
             }
         });
+        
+        ImageButton myLocationButton = (ImageButton) findViewById(R.id.my_gps_location);
+        myLocationButton.setOnClickListener(new View.OnClickListener() {
+        	@Override 	
+        	public void onClick(final View v) {
+        	 // add GPS My Location functionality 
+            initGps(((MyLocationMapEventListener) mapView.getOptions().getMapListener()).getLocationCircle());
+        	}
+        });
+
 
         // create layer for search result 
         searchMarkerLayer = new MarkerLayer(mapView.getLayers().getBaseLayer().getProjection());
@@ -159,8 +250,60 @@ public class AddressSearch extends Activity {
 
     @Override
     protected void onStop() {
+        // remove GPS listener, otherwise we will leak memory
+        deinitGps();
         super.onStop();
         mapView.stopMapping();
+    }
+    
+    protected void initGps(final MyLocationMapEventListener.MyLocationCircle locationCircle) {
+        final Projection proj = mapView.getLayers().getBaseLayer().getProjection();
+        final RenderProjection renderProj = mapView.getLayers().getBaseLayer().getRenderProjection();
+
+        // create location listener
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                Log.debug("GPS onLocationChanged "+location);
+                if (locationCircle != null) {
+                    locationCircle.setLocation(proj, renderProj, location);
+                    locationCircle.setVisible(true);
+                    mapView.setFocusPoint(mapView.getLayers().getBaseLayer().getProjection().fromWgs84(location.getLongitude(), location.getLatitude()));
+
+                }
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+                Log.debug("GPS onStatusChanged "+provider+" to "+status);
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+                Log.debug("GPS onProviderEnabled");
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+                Log.debug("GPS onProviderDisabled");
+            }
+        };
+
+        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
+        // dynamic: just fire all providers with same parameters
+        for(String provider : locationManager.getProviders(true)){
+            Log.debug("adding location provider "+provider);
+            locationManager.requestLocationUpdates(provider, 10000, 500, locationListener);    
+        }
+
+        
+    }
+
+    protected void deinitGps() {
+        // remove listeners from location manager - otherwise we will leak memory
+        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        locationManager.removeUpdates(locationListener);    
     }
 
     @Override 
@@ -188,6 +331,19 @@ public class AddressSearch extends Activity {
 
     public MapView getMapView() {
         return mapView;
+    }
+    
+ // adjust zooming to DPI, so texts on rasters will be not too small
+    // useful for non-retina rasters, they would look like "digitally zoomed"
+
+    private void adjustMapDpi() {
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        float dpi = metrics.densityDpi;
+        // following is equal to  -log2(dpi / DEFAULT_DPI)
+        float adjustment = (float) - (Math.log(dpi / DisplayMetrics.DENSITY_HIGH) / Math.log(2));
+        Log.debug("adjust DPI = "+dpi+" as zoom adjustment = "+adjustment);
+        mapView.getOptions().setTileZoomLevelBias(adjustment / 2.0f);
     }
 
 }

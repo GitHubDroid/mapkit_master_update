@@ -142,8 +142,19 @@ public class MyLocationMapEventListener extends MapListener {
             
             gl.glBindTexture(GL10.GL_TEXTURE_2D, 0);
             
-            // Colour is yellow (R=1,G=1,B=0)
-            gl.glColor4f(1, 1, 0, circleAlpha);
+            // Color is yellow (R=1,G=1,B=0)
+            // Color red  (r=1,   g=0,   b=0)
+            // Color blue (r=0,   g=0,   b=1)  
+            // Color cyan (r=0,   g=1,   b=1)
+            // Color magenta (r=1,   g=0,   b=1)
+            // Color middleyellow (r=1,   g=1,   b=.2)
+            // Color middleblue (r=0,   g=0,   b=.9)
+            // Color middlegreen (r=0,   g=.8,  b=0)
+            // Color middlered (r=.9,  g=0,   b=0)
+            // Color middlecyan (r=0,   g=.8,  b=.8)
+            
+            
+            gl.glColor4f(1, 0, 0, circleAlpha);
 
             gl.glVertexPointer(3, GL10.GL_FLOAT, 0, circleVertBuf);
 

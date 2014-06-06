@@ -8,31 +8,6 @@ import org.mapsforge.map.reader.header.FileOpenResult;
 import org.mapsforge.map.rendertheme.InternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
-import com.nutiteq.MapView;
-import com.nutiteq.components.Components;
-import com.nutiteq.components.MapPos;
-import com.nutiteq.components.Options;
-import com.nutiteq.components.Range;
-import com.nutiteq.datasources.raster.MBTilesRasterDataSource;
-import com.nutiteq.datasources.raster.MapsforgeRasterDataSource;
-import com.nutiteq.geometry.Marker;
-import com.nutiteq.layers.vector.DriveTimeRegionLayer;
-import com.nutiteq.log.Log;
-import com.nutiteq.projections.EPSG3857;
-import com.nutiteq.projections.Projection;
-import com.nutiteq.rasterdatasources.HTTPRasterDataSource;
-import com.nutiteq.rasterdatasources.RasterDataSource;
-import com.nutiteq.rasterlayers.RasterLayer;
-import com.nutiteq.renderprojections.RenderProjection;
-import com.nutiteq.style.MarkerStyle;
-import com.nutiteq.style.PolygonStyle;
-import com.nutiteq.style.StyleSet;
-import com.nutiteq.ui.DefaultLabel;
-import com.nutiteq.ui.Label;
-import com.nutiteq.utils.UnscaledBitmapLoader;
-import com.nutiteq.vectorlayers.MarkerLayer;
-import com.promptnet.mobiledev.mapkit.maplisteners.MyLocationMapEventListener;
-
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -47,9 +22,32 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.ZoomControls;
-import android.widget.SeekBar.OnSeekBarChangeListener;
+
+import com.nutiteq.MapView;
+import com.nutiteq.components.Components;
+import com.nutiteq.components.MapPos;
+import com.nutiteq.components.Options;
+import com.nutiteq.components.Range;
+import com.nutiteq.datasources.raster.MBTilesRasterDataSource;
+import com.nutiteq.datasources.raster.MapsforgeRasterDataSource;
+import com.nutiteq.geometry.Marker;
+import com.nutiteq.layers.vector.DriveTimeRegionLayer;
+import com.nutiteq.log.Log;
+import com.nutiteq.projections.EPSG3857;
+import com.nutiteq.projections.Projection;
+import com.nutiteq.rasterlayers.RasterLayer;
+import com.nutiteq.renderprojections.RenderProjection;
+import com.nutiteq.style.MarkerStyle;
+import com.nutiteq.style.PolygonStyle;
+import com.nutiteq.style.StyleSet;
+import com.nutiteq.ui.DefaultLabel;
+import com.nutiteq.ui.Label;
+import com.nutiteq.utils.UnscaledBitmapLoader;
+import com.nutiteq.vectorlayers.MarkerLayer;
+import com.promptnet.mobiledev.mapkit.maplisteners.MyLocationMapEventListener;
 
 /**
  * Shows animated location on map, and fixed drivetime region around user location
@@ -68,22 +66,16 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
  *      Drive time value is selected by user with a Seekbar control on map
  *      During data loading progress indicator is shown in application header, using FEATURE_INDETERMINATE_PROGRESS
  * 
- * @author jaak
+ * 
  *
  */
 
 public class GPSLocation extends Activity {
 
 	private MapView mapView;
-    private DriveTimeRegionLayer driveTimeLayer;
     private LocationListener locationListener;
     ImageButton myLocationButton;
 
-    int[] timeValues = new int[] { 1, 5, 10, 15, 30, 60, 90, 120, 240, 480 };
-
-    String[] timeLabels = new String[] { "1 min", "5 min", "10 min", "15 min",
-            "30 min", "1 h", "1:30 h", "2 h", "4 h", "8 h" };
-    private TextView textView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -121,7 +113,6 @@ public class GPSLocation extends Activity {
             MyLocationMapEventListener mapListener = new MyLocationMapEventListener(this, mapView);
             mapView.getOptions().setMapListener(mapListener);
         }
-
 
         // 3. Define map layer for basemap - mandatory.
         // Here we use MapQuest open tiles
@@ -178,7 +169,7 @@ public class GPSLocation extends Activity {
         // rotation - 0 = north-up
         mapView.setMapRotation(0f);
         // zoom - 0 = world, like on most web maps
-        mapView.setZoom(13.0f);
+        mapView.setZoom(14.0f);
         // tilt means perspective view. Default is 90 degrees for "normal" 2D map view, minimum allowed is 30 degrees.
         mapView.setTilt(65.0f);
 
@@ -267,58 +258,59 @@ public class GPSLocation extends Activity {
             initGps(((MyLocationMapEventListener) mapView.getOptions().getMapListener()).getLocationCircle());
         	}
         });
+    }
             
 
-        // add SeekBar to control DrivingDistance
-        SeekBar seekBar = (SeekBar) findViewById(R.id.seekBar);
-        seekBar.setVisibility(View.VISIBLE);
+//        // add SeekBar to control DrivingDistance
+//        SeekBar seekBar = (SeekBar) findViewById(R.id.seekBar);
+//        seekBar.setVisibility(View.VISIBLE);
+//
+//        textView = (TextView) findViewById(R.id.textView);
+//        textView.setVisibility(View.VISIBLE);
+//
+//        // configure SeekBar
+//        seekBar.setMax(timeValues.length-1);
+//        seekBar.setProgress(4);
+//
+//        seekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+//
+//            @Override
+//            public void onStopTrackingTouch(SeekBar seekBar) {
+//            }
+//
+//            @Override
+//            public void onStartTrackingTouch(SeekBar seekBar) {
+//            }
+//
+//            @Override
+//            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+//                Log.debug("progress to "+progress+" time to "+timeValues[progress]);
+//                textView.setText(timeLabels[progress]);
+//                driveTimeLayer.setDistance(timeValues[progress]/60.0f);
+//            }
+//        });     
 
-        textView = (TextView) findViewById(R.id.textView);
-        textView.setVisibility(View.VISIBLE);
+//        // drivetime region layer
+//        StyleSet<PolygonStyle> polygonStyleSet = new StyleSet<PolygonStyle>(PolygonStyle.builder().setColor(Color.GREEN & 0x80FFFFFF).build());
+//
+//        driveTimeLayer = new DriveTimeRegionLayer(mapView.getLayers().getBaseLayer().getProjection(), polygonStyleSet) {
+//            @Override
+//            protected void setRunningState(final boolean flag) {
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        setProgressBarIndeterminateVisibility(flag);
+//                    }
+//                });
+//            }
+//        };
 
-        // configure SeekBar
-        seekBar.setMax(timeValues.length-1);
-        seekBar.setProgress(4);
-
-        seekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
-
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                Log.debug("progress to "+progress+" time to "+timeValues[progress]);
-                textView.setText(timeLabels[progress]);
-                driveTimeLayer.setDistance(timeValues[progress]/60.0f);
-            }
-        });     
-
-        // drivetime region layer
-        StyleSet<PolygonStyle> polygonStyleSet = new StyleSet<PolygonStyle>(PolygonStyle.builder().setColor(Color.GREEN & 0x80FFFFFF).build());
-
-        driveTimeLayer = new DriveTimeRegionLayer(mapView.getLayers().getBaseLayer().getProjection(), polygonStyleSet) {
-            @Override
-            protected void setRunningState(final boolean flag) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        setProgressBarIndeterminateVisibility(flag);
-                    }
-                });
-            }
-        };
-
-        // initial values
-        driveTimeLayer.setDistance(timeValues[seekBar.getProgress()]/60.0f);
-        textView.setText(timeLabels[seekBar.getProgress()]);
-
-        mapView.getLayers().addLayer(driveTimeLayer);
-    }
+//        // initial values
+//        driveTimeLayer.setDistance(timeValues[seekBar.getProgress()]/60.0f);
+//        textView.setText(timeLabels[seekBar.getProgress()]);
+//
+//        mapView.getLayers().addLayer(driveTimeLayer);
+//    }
 
 
     @Override
@@ -326,8 +318,6 @@ public class GPSLocation extends Activity {
         mapView.startMapping();
         super.onStart();
 
-//        // add GPS My Location functionality 
-//        initGps(((MyLocationMapEventListener) mapView.getOptions().getMapListener()).getLocationCircle());
     }
 
     @Override
@@ -339,10 +329,6 @@ public class GPSLocation extends Activity {
         mapView.stopMapping();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
 
     protected void initGps(final MyLocationMapEventListener.MyLocationCircle locationCircle) {
         final Projection proj = mapView.getLayers().getBaseLayer().getProjection();
@@ -357,7 +343,7 @@ public class GPSLocation extends Activity {
                     locationCircle.setLocation(proj, renderProj, location);
                     locationCircle.setVisible(true);
                     mapView.setFocusPoint(mapView.getLayers().getBaseLayer().getProjection().fromWgs84(location.getLongitude(), location.getLatitude()));
-                    driveTimeLayer.setMapPos(new MapPos(location.getLongitude(), location.getLatitude()));
+
                 }
             }
 
@@ -385,10 +371,7 @@ public class GPSLocation extends Activity {
             locationManager.requestLocationUpdates(provider, 10000, 500, locationListener);    
         }
 
-        // fixed providers - may not work on some devices
-//      locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 500, locationListener);
-//      locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 500, locationListener);
-
+        
     }
 
     protected void deinitGps() {
@@ -401,7 +384,7 @@ public class GPSLocation extends Activity {
         return mapView;
     }
     
- // adjust zooming to DPI, so texts on rasters will be not too small
+    // adjust zooming to DPI, so texts on rasters will be not too small
     // useful for non-retina rasters, they would look like "digitally zoomed"
 
     private void adjustMapDpi() {

@@ -92,7 +92,7 @@ public class MapKITOnlineMapActivity extends Activity{
         // rotation - 0 = north-up
         mapView.setMapRotation(0f);
         // zoom - 0 = world, like on most web maps
-        mapView.setZoom(13.0f);
+        mapView.setZoom(14.0f);
         // tilt means perspective view. Default is 90 degrees for "normal" 2D map view, minimum allowed is 30 degrees.
         mapView.setTilt(65.0f);
 
