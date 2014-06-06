@@ -5,17 +5,24 @@ import java.io.IOException;
 
 import com.nutiteq.MapView;
 import com.nutiteq.components.Components;
+import com.nutiteq.components.MapPos;
 import com.nutiteq.components.Options;
 import com.nutiteq.components.Range;
 import com.nutiteq.datasources.raster.MBTilesRasterDataSource;
+import com.nutiteq.geometry.Marker;
 import com.nutiteq.log.Log;
 import com.nutiteq.projections.EPSG3857;
 import com.nutiteq.rasterdatasources.HTTPRasterDataSource;
 import com.nutiteq.rasterdatasources.RasterDataSource;
 import com.nutiteq.rasterlayers.RasterLayer;
+import com.nutiteq.style.MarkerStyle;
+import com.nutiteq.ui.DefaultLabel;
+import com.nutiteq.ui.Label;
 import com.nutiteq.utils.UnscaledBitmapLoader;
+import com.nutiteq.vectorlayers.MarkerLayer;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
@@ -119,6 +126,35 @@ public class MapKITOnlineMapActivity extends Activity{
         mapView.getOptions().setPersistentCachePath(this.getDatabasePath("mapcache").getPath());
         // set persistent raster cache limit to 100MB
         mapView.getOptions().setPersistentCacheSize(100 * 1024 * 1024);
+        
+        // Add simple marker to map. 
+        // define marker style (image, size, color)
+        
+        Bitmap SCApointMarker = UnscaledBitmapLoader.decodeResource(getResources(), R.drawable.olmarker);
+        MarkerStyle SCAmarkerStyle = MarkerStyle.builder().setBitmap(SCApointMarker).setSize(0.5f).setColor(Color.WHITE).build();
+        
+     // define label what is shown when you click on marker
+        Label SCAmarkerLabel = new DefaultLabel("Village of Scarsdale", "Village Hall");
+        
+     // define location of the marker, it must be converted to base map coordinate system
+        MapPos markerLocation = mapLayer.getProjection().fromWgs84(-73.7967994f, 40.9884312f);
+        
+     // create layer and add object to the layer, finally add layer to the map. 
+     // All overlay layers must be same projection as base layer, so we reuse it
+        
+        MarkerLayer SCAmarkerLayer = new MarkerLayer(mapLayer.getProjection());
+        
+        // Add SCAmarker Layer zoom constraint from zoom level 14 to 20
+        SCAmarkerLayer.setVisibleZoomRange(new Range(14, 20));
+        
+        SCAmarkerLayer.add(new Marker(markerLocation, SCAmarkerLabel, SCAmarkerStyle, SCAmarkerLayer));
+        mapView.getLayers().addLayer(SCAmarkerLayer);
+        
+        // Increase RasterTaskPoolSize values for multi-threading and to make user experience more smooth and improve performance.
+        // The surrounding tiles are pre-fetched and loaded.
+        // But it does put some work on the processor. So use according to requirement. Normally any value between 4 to 8 are good.
+        
+        mapView.getOptions().setRasterTaskPoolSize(4);
 
         // 4. zoom buttons using Android widgets - optional
         // get the zoomcontrols that was defined in main.xml
