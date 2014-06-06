@@ -242,7 +242,10 @@ public class MapKITOfflineMapActivity extends Activity {
       protected void onDestroy() {
           super.onDestroy();
       }
-      
+
+      public MapView getMapView() {
+          return mapView;
+      }
             
      
       // adjust zooming to DPI, so texts on rasters will be not too small

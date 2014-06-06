@@ -1,8 +1,14 @@
 package com.promptnet.mobiledev.mapkit;
 
+import java.io.File;
+import java.io.IOException;
+
 import com.nutiteq.MapView;
 import com.nutiteq.components.Components;
 import com.nutiteq.components.Options;
+import com.nutiteq.components.Range;
+import com.nutiteq.datasources.raster.MBTilesRasterDataSource;
+import com.nutiteq.log.Log;
 import com.nutiteq.projections.EPSG3857;
 import com.nutiteq.rasterdatasources.HTTPRasterDataSource;
 import com.nutiteq.rasterdatasources.RasterDataSource;
@@ -12,6 +18,8 @@ import com.nutiteq.utils.UnscaledBitmapLoader;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ZoomControls;
 
@@ -48,16 +56,38 @@ public class MapKITOnlineMapActivity extends Activity{
         RasterDataSource dataSource = new HTTPRasterDataSource(new EPSG3857(), 0, 18, "http://otile1.mqcdn.com/tiles/1.0.0/osm/{zoom}/{x}/{y}.png");
         RasterLayer mapLayer = new RasterLayer(dataSource, 0);
         mapView.getLayers().setBaseLayer(mapLayer);
-
-        // Location: Estonia
-        mapView.setFocusPoint(mapView.getLayers().getBaseLayer().getProjection().fromWgs84(24.5f, 58.3f));
-
+        adjustMapDpi();
+        
+        
+        //Add MBTiles Layer to basemap
+        
+        String mbtileFile = Environment.getExternalStorageDirectory().getPath()+ "/layers.mbtiles"; 
+        File mbFile = new File(Environment.getExternalStorageDirectory(), "/layers/layers.mbtiles");
+               
+        try {
+        	MBTilesRasterDataSource mbtileSource = new MBTilesRasterDataSource (new EPSG3857(), 0, 20, mbtileFile, false, this.getApplicationContext());
+        	RasterLayer mbLayer = new RasterLayer(mbtileSource, mbFile.hashCode());
+        	
+        	//Set mbtile layer zoom constraint from zoom level 14 to level 20
+        	mbLayer.setVisibleZoomRange(new Range(14, 20));
+        	mapView.getLayers().addLayer(mbLayer);
+        	
+        } catch (IOException e) {
+            // means usually that given .mbtiles file is not found or cannot be opened as sqlite database
+            Log.error(e.getLocalizedMessage());
+            e.printStackTrace();
+        }
+     // Location: Scarsdale
+        // NB! it must be in base layer projection (EPSG3857), so we convert it from lat and long
+                
+        mapView.setFocusPoint(mapView.getLayers().getBaseLayer().getProjection().fromWgs84(-73.7635316f, 40.9690798f));
+        
         // rotation - 0 = north-up
         mapView.setMapRotation(0f);
         // zoom - 0 = world, like on most web maps
-        mapView.setZoom(5.0f);
+        mapView.setZoom(13.0f);
         // tilt means perspective view. Default is 90 degrees for "normal" 2D map view, minimum allowed is 30 degrees.
-        mapView.setTilt(90.0f);
+        mapView.setTilt(65.0f);
 
         // Activate some mapview options to make it smoother - optional
         mapView.getOptions().setPreloading(true);
@@ -125,6 +155,17 @@ public class MapKITOnlineMapActivity extends Activity{
         return mapView;
     }
 
+ // adjust zooming to DPI, so texts on rasters will be not too small
+    // useful for non-retina rasters, they would look like "digitally zoomed"
+    private void adjustMapDpi() {
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        float dpi = metrics.densityDpi;
+        // following is equal to  -log2(dpi / DEFAULT_DPI)
+        float adjustment = (float) - (Math.log(dpi / DisplayMetrics.DENSITY_HIGH) / Math.log(2));
+        Log.debug("adjust DPI = "+dpi+" as zoom adjustment = "+adjustment);
+        mapView.getOptions().setTileZoomLevelBias(adjustment / 2.0f);
+    }
 
 }
 	

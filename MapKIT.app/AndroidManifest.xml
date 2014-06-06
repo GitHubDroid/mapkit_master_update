@@ -59,7 +59,7 @@
 	</activity>
 	<provider
            android:name="com.promptnet.mobiledev.mapquest.SearchSuggestionProvider"
-           android:authorities="com.nutiteq.osm"
+           android:authorities="com.promptnet.mobiledev.osm"
 	       android:exported="false">
 	</provider>
     

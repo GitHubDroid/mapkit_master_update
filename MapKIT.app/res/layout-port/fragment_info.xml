@@ -9,7 +9,7 @@
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="match_parent"
-        class="com.nutiteq.fragmentmap.InfoFragment" >
+        class="com.promptnet.mobiledev.fragmentmap.InfoFragment" >
     </fragment>
 
 </LinearLayout> 
