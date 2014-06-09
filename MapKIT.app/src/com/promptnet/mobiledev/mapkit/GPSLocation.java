@@ -108,6 +108,7 @@ public class GPSLocation extends Activity {
             mapView.getOptions().setMapListener(mapListener);
         }
 
+
         // 3. Define map layer for basemap - mandatory.
         // Here we use MapQuest open tiles
         // Almost all online tiled maps use EPSG3857 projection.
@@ -252,8 +253,8 @@ public class GPSLocation extends Activity {
             initGps(((MyLocationMapEventListener) mapView.getOptions().getMapListener()).getLocationCircle());
         	}
         });
-    }
-            
+    
+    }  
 
 
 
@@ -277,8 +278,7 @@ public class GPSLocation extends Activity {
     protected void onDestroy() {
         super.onDestroy();
     }
-    
-
+   
     protected void initGps(final MyLocationMapEventListener.MyLocationCircle locationCircle) {
         final Projection proj = mapView.getLayers().getBaseLayer().getProjection();
         final RenderProjection renderProj = mapView.getLayers().getBaseLayer().getRenderProjection();

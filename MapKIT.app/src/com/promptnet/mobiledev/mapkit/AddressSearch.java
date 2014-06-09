@@ -9,12 +9,17 @@ import org.mapsforge.map.rendertheme.InternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ZoomControls;
 
 import com.nutiteq.MapView;
@@ -27,12 +32,15 @@ import com.nutiteq.datasources.raster.MapsforgeRasterDataSource;
 import com.nutiteq.geometry.Marker;
 import com.nutiteq.log.Log;
 import com.nutiteq.projections.EPSG3857;
+import com.nutiteq.projections.Projection;
 import com.nutiteq.rasterlayers.RasterLayer;
+import com.nutiteq.renderprojections.RenderProjection;
 import com.nutiteq.style.MarkerStyle;
 import com.nutiteq.ui.DefaultLabel;
 import com.nutiteq.ui.Label;
 import com.nutiteq.utils.UnscaledBitmapLoader;
 import com.nutiteq.vectorlayers.MarkerLayer;
+import com.promptnet.mobiledev.mapkit.maplisteners.MyLocationMapEventListener;
 
 /**
  * Address search / Geocoding sample.
@@ -63,6 +71,8 @@ public class AddressSearch extends Activity {
     private static Marker searchResult;
     private MapView mapView;
     private MarkerLayer searchMarkerLayer;
+    private LocationListener locationListener;
+    ImageButton myLocationButton;
    
    
     @Override
@@ -83,12 +93,21 @@ public class AddressSearch extends Activity {
         if (retainObject != null) {
             // just restore configuration, skip other initializations
             mapView.setComponents(retainObject);
+            
+            // add map event listener
+            MyLocationMapEventListener mapListener = new MyLocationMapEventListener(this, mapView);
+            mapView.getOptions().setMapListener(mapListener);
             return;
         } else {
             // 2. create and set MapView components - mandatory
             Components components = new Components();
             mapView.setComponents(components);
+
+            // add map event listener
+            MyLocationMapEventListener mapListener = new MyLocationMapEventListener(this, mapView);
+            mapView.getOptions().setMapListener(mapListener);
         }
+
 
         // 3. Define map layer for basemap - mandatory.
         // Here we use MapQuest open tiles
@@ -227,6 +246,16 @@ public class AddressSearch extends Activity {
             }
         });
         
+        ImageButton myLocationButton = (ImageButton) findViewById(R.id.my_gps_location);
+        myLocationButton.setOnClickListener(new View.OnClickListener() {
+        	@Override 	
+        	public void onClick(final View v) {
+        		
+        	 // add GPS My Location functionality 
+            initGps(((MyLocationMapEventListener) mapView.getOptions().getMapListener()).getLocationCircle());
+        	}
+        });
+        
      // create layer for search result 
         searchMarkerLayer = new MarkerLayer(mapView.getLayers().getBaseLayer().getProjection());
 //      searchResult = new Marker(new MapPos(0,0), null, (MarkerStyle) null, null);
@@ -241,12 +270,18 @@ public class AddressSearch extends Activity {
 
     @Override
     protected void onStart() {
+    	
         mapView.startMapping();
         super.onStart();
+        initGps(null);
+        
     }
 
     @Override
     protected void onStop() {
+    	// remove GPS listener, otherwise we will leak memory
+        deinitGps();
+
         super.onStop();
         mapView.stopMapping();
         
@@ -275,10 +310,58 @@ public class AddressSearch extends Activity {
         searchResult = marker;
     }
 
-    
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+        
+    protected void initGps(final MyLocationMapEventListener.MyLocationCircle locationCircle) {
+        final Projection proj = mapView.getLayers().getBaseLayer().getProjection();
+        final RenderProjection renderProj = mapView.getLayers().getBaseLayer().getRenderProjection();
+
+        // create location listener
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                Log.debug("GPS onLocationChanged "+location);
+                if (locationCircle != null) {
+                    locationCircle.setLocation(proj, renderProj, location);
+                    locationCircle.setVisible(true);
+                    mapView.setFocusPoint(mapView.getLayers().getBaseLayer().getProjection().fromWgs84(location.getLongitude(), location.getLatitude()));
+//                    driveTimeLayer.setMapPos(new MapPos(location.getLongitude(), location.getLatitude()));
+                }
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+                Log.debug("GPS onStatusChanged "+provider+" to "+status);
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+                Log.debug("GPS onProviderEnabled");
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+                Log.debug("GPS onProviderDisabled");
+            }
+        };
+
+        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
+        // dynamic: just fire all providers with same parameters
+        for(String provider : locationManager.getProviders(true)){
+            Log.debug("adding location provider "+provider);
+            locationManager.requestLocationUpdates(provider, 10000, 500, locationListener);    
+        }
+
+        // fixed providers - may not work on some devices
+//      locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 500, locationListener);
+//      locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 500, locationListener);
+
+    }
+
+    protected void deinitGps() {
+        // remove listeners from location manager - otherwise we will leak memory
+        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        locationManager.removeUpdates(locationListener);    
     }
     
         
