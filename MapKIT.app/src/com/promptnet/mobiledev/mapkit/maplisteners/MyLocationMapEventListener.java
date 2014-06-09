@@ -22,7 +22,7 @@ import com.nutiteq.utils.Const;
  * 
  * This MapListener demonstrates usage of OpenGL-level API to show animations on map
  * 
- * @author jaak
+ * 
  *
  */
 public class MyLocationMapEventListener extends MapListener {

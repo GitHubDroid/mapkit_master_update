@@ -21,9 +21,6 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageButton;
-import android.widget.SeekBar;
-import android.widget.SeekBar.OnSeekBarChangeListener;
-import android.widget.TextView;
 import android.widget.ZoomControls;
 
 import com.nutiteq.MapView;
@@ -34,15 +31,12 @@ import com.nutiteq.components.Range;
 import com.nutiteq.datasources.raster.MBTilesRasterDataSource;
 import com.nutiteq.datasources.raster.MapsforgeRasterDataSource;
 import com.nutiteq.geometry.Marker;
-import com.nutiteq.layers.vector.DriveTimeRegionLayer;
 import com.nutiteq.log.Log;
 import com.nutiteq.projections.EPSG3857;
 import com.nutiteq.projections.Projection;
 import com.nutiteq.rasterlayers.RasterLayer;
 import com.nutiteq.renderprojections.RenderProjection;
 import com.nutiteq.style.MarkerStyle;
-import com.nutiteq.style.PolygonStyle;
-import com.nutiteq.style.StyleSet;
 import com.nutiteq.ui.DefaultLabel;
 import com.nutiteq.ui.Label;
 import com.nutiteq.utils.UnscaledBitmapLoader;
@@ -169,7 +163,7 @@ public class GPSLocation extends Activity {
         // rotation - 0 = north-up
         mapView.setMapRotation(0f);
         // zoom - 0 = world, like on most web maps
-        mapView.setZoom(14.0f);
+        mapView.setZoom(13.0f);
         // tilt means perspective view. Default is 90 degrees for "normal" 2D map view, minimum allowed is 30 degrees.
         mapView.setTilt(65.0f);
 
@@ -261,56 +255,6 @@ public class GPSLocation extends Activity {
     }
             
 
-//        // add SeekBar to control DrivingDistance
-//        SeekBar seekBar = (SeekBar) findViewById(R.id.seekBar);
-//        seekBar.setVisibility(View.VISIBLE);
-//
-//        textView = (TextView) findViewById(R.id.textView);
-//        textView.setVisibility(View.VISIBLE);
-//
-//        // configure SeekBar
-//        seekBar.setMax(timeValues.length-1);
-//        seekBar.setProgress(4);
-//
-//        seekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-//
-//            @Override
-//            public void onStopTrackingTouch(SeekBar seekBar) {
-//            }
-//
-//            @Override
-//            public void onStartTrackingTouch(SeekBar seekBar) {
-//            }
-//
-//            @Override
-//            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-//                Log.debug("progress to "+progress+" time to "+timeValues[progress]);
-//                textView.setText(timeLabels[progress]);
-//                driveTimeLayer.setDistance(timeValues[progress]/60.0f);
-//            }
-//        });     
-
-//        // drivetime region layer
-//        StyleSet<PolygonStyle> polygonStyleSet = new StyleSet<PolygonStyle>(PolygonStyle.builder().setColor(Color.GREEN & 0x80FFFFFF).build());
-//
-//        driveTimeLayer = new DriveTimeRegionLayer(mapView.getLayers().getBaseLayer().getProjection(), polygonStyleSet) {
-//            @Override
-//            protected void setRunningState(final boolean flag) {
-//                runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        setProgressBarIndeterminateVisibility(flag);
-//                    }
-//                });
-//            }
-//        };
-
-//        // initial values
-//        driveTimeLayer.setDistance(timeValues[seekBar.getProgress()]/60.0f);
-//        textView.setText(timeLabels[seekBar.getProgress()]);
-//
-//        mapView.getLayers().addLayer(driveTimeLayer);
-//    }
 
 
     @Override
@@ -329,6 +273,11 @@ public class GPSLocation extends Activity {
         mapView.stopMapping();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+    
 
     protected void initGps(final MyLocationMapEventListener.MyLocationCircle locationCircle) {
         final Projection proj = mapView.getLayers().getBaseLayer().getProjection();

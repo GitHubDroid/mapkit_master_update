@@ -186,6 +186,12 @@ public class MapKITOnlineMapActivity extends Activity{
         super.onStop();
         mapView.stopMapping();
     }
+    
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+    
 
     public MapView getMapView() {
         return mapView;

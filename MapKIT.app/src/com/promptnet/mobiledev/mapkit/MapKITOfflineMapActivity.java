@@ -236,6 +236,11 @@ public class MapKITOfflineMapActivity extends Activity {
           super.onStop();
       }
       
+	@Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+    
                  
       public MapView getMapView() {
           return mapView;
