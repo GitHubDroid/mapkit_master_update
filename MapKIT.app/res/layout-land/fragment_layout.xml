@@ -1,0 +1,50 @@
+<!-- Your package folder -->
+<com.promptnet.mobiledev.mapkit
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_weight="1"
+    android:background="#f8f9fe" >
+    <!--  Map View Button -->
+    <Button
+        android:id="@+id/btn_map"
+        style="@style/DashboardButton"
+        android:drawableTop="@drawable/map"
+        android:text="Map View" />
+     
+    <!--  POI Search Button -->
+    <Button
+        android:id="@+id/btn_search"
+        style="@style/DashboardButton"
+        android:drawableTop="@drawable/search"
+        android:text="POI Search" />
+     
+    <!--  Map Drawer Button -->
+    <Button
+        android:id="@+id/btn_mapdrawer"
+        style="@style/DashboardButton"
+        android:drawableTop="@drawable/mapdrawer"
+        android:text="Map Drawer" />
+     
+    <!--  Notes Button -->
+    <Button
+        android:id="@+id/btn_notes"
+        style="@style/DashboardButton"
+        android:drawableTop="@drawable/notebook"
+        android:text="Notes" />
+ 
+    <!--  About Button -->
+    <Button
+        android:id="@+id/btn_about"
+        style="@style/DashboardButton"
+        android:drawableTop="@drawable/about"
+        android:text="About" />
+ 
+    <!--  Exit Button -->
+    <Button
+        android:id="@+id/btn_exit"
+        style="@style/DashboardButton"
+        android:drawableTop="@drawable/exit"
+        android:text="Exit" />
+ 
+</com.promptnet.mobiledev.mapkit>

@@ -2,7 +2,6 @@ package com.promptnet.mobiledev.mapkit;
 
 import com.promptnet.mobiledev.filepicker.FilePicker;
 import com.promptnet.mobiledev.filepicker.FilePickerActivity;
-import com.promptnet.mobiledev.mapkit.track.GPSInfo;
 
 import android.app.ListActivity;
 import android.content.Intent;
