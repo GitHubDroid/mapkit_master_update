@@ -1,50 +1,49 @@
-<!-- Your package folder -->
-<com.promptnet.mobiledev.mapkit
+<com.promptnet.mobiledev.mapkit.DashboardLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:layout_weight="1"
     android:background="#f8f9fe" >
-    <!--  Map View Button -->
+	<!--  Map View Button -->
     <Button
-        android:id="@+id/btn_map"
+        android:id="@+id/btn_mapview"
         style="@style/DashboardButton"
-        android:drawableTop="@drawable/map"
+        android:drawableTop="@drawable/btn_mapview"
         android:text="Map View" />
-     
-    <!--  POI Search Button -->
+    
+	<!--  POI Search Button -->
     <Button
         android:id="@+id/btn_search"
         style="@style/DashboardButton"
-        android:drawableTop="@drawable/search"
+        android:drawableTop="@drawable/btn_search"
         android:text="POI Search" />
-     
-    <!--  Map Drawer Button -->
+    
+	<!--  Map Drawer Button -->
     <Button
         android:id="@+id/btn_mapdrawer"
         style="@style/DashboardButton"
-        android:drawableTop="@drawable/mapdrawer"
+        android:drawableTop="@drawable/btn_mapdrawer"
         android:text="Map Drawer" />
-     
+	
     <!--  Notes Button -->
     <Button
         android:id="@+id/btn_notes"
         style="@style/DashboardButton"
-        android:drawableTop="@drawable/notebook"
+        android:drawableTop="@drawable/btn_notes"
         android:text="Notes" />
- 
+
     <!--  About Button -->
     <Button
         android:id="@+id/btn_about"
         style="@style/DashboardButton"
-        android:drawableTop="@drawable/about"
+        android:drawableTop="@drawable/btn_about"
         android:text="About" />
- 
+
     <!--  Exit Button -->
     <Button
         android:id="@+id/btn_exit"
         style="@style/DashboardButton"
-        android:drawableTop="@drawable/exit"
+        android:drawableTop="@drawable/btn_exit"
         android:text="Exit" />
- 
-</com.promptnet.mobiledev.mapkit>
+
+</com.promptnet.mobiledev.mapkit.DashboardLayout>

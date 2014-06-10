@@ -38,11 +38,11 @@
         </activity>
         
         <activity android:name="com.promptnet.mobiledev.mapkit.DashboardActivity"></activity>
-        <activity android:name="com.promptnet.mobiledev.mapkit.MapKITOnlineMapActivity"></activity>
-        <activity android:name="com.promptnet.mobiledev.mapkit.MapKITOfflineMapActivity"></activity>
         <activity android:name="com.promptnet.mobiledev.mapkit.track.GPSInfo"></activity>
         <activity android:name="com.promptnet.mobiledev.fragmentmap.FragmentMapActivity"></activity>
         <activity android:name="com.promptnet.mobiledev.fragmentmap.InfoActivity"></activity>
+        <activity android:name="com.promptnet.mobiledev.mapkit.AboutActivity"></activity>
+        <activity android:name="com.promptnet.mobiledev.mapkit.mapdrawer.MapDrawerActivity"></activity>
         <activity android:name="com.promptnet.mobiledev.mapkit.GPSLocation"></activity>
         
         <activity

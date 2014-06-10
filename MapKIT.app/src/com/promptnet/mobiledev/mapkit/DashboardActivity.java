@@ -1,112 +1,113 @@
 package com.promptnet.mobiledev.mapkit;
 
-import com.promptnet.mobiledev.filepicker.FilePicker;
-import com.promptnet.mobiledev.filepicker.FilePickerActivity;
 
-import android.app.ListActivity;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.Button;
 
-public class DashboardActivity extends ListActivity {
+import com.promptnet.mobiledev.mapkit.mapdrawer.MapDrawerActivity;
+import com.promptnet.mobiledev.mapkit.notes.NotesActivity;
 
-	// list of demos: MapActivity, ParameterSelectorActivity (can be null)
-    // if parameter selector is given, then this is launched first to get a parameter (file path)
-    
-    private Object[][] samples={
-            {MapKITOnlineMapActivity.class,null},
-            {MapKITOfflineMapActivity.class,null},
-            {AddressSearch.class,null},
-            {GPSLocation.class,null},
-            {com.promptnet.mobiledev.mapkit.track.GPSInfo.class,null},
-            {com.promptnet.mobiledev.fragmentmap.FragmentMapActivity.class,null},
+public class DashboardActivity extends Activity {
 
-    };
-
-    @Override
+	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.dashboard_layout);
+                 
         
-        setContentView(R.layout.list);
-
-        ListView lv = this.getListView();
-        lv.setAdapter(new ArrayAdapter<String>(
-                this, 
-                android.R.layout.simple_list_item_1, 
-                getStringArray()));
-    }
-    
-    private String[] getStringArray() {
-        String[] sampleNames = new String[samples.length];
-        for(int i=0; i < samples.length; i++) {
-            sampleNames[i] = ((Class<?>) samples[i][0]).getSimpleName();
-        }
-        return sampleNames;
-    }
-
-    @Override
-    public void onListItemClick(ListView parent, View v, int position, long id) {
-        if (samples[position][1] != null) {
-
-            try {
-
-                Intent myIntent = new Intent(DashboardActivity.this,
-                        (Class<?>) samples[position][1]);
-
-                Class<?> activityToRun = (Class<?>) samples[position][0];
-                FilePickerActivity activityInstance = (FilePickerActivity) activityToRun
-                        .newInstance();
-
-                FilePicker.setFileSelectMessage(activityInstance
-                        .getFileSelectMessage());
-                FilePicker.setFileDisplayFilter(activityInstance
-                        .getFileFilter());
-
-                Bundle b = new Bundle();
-                b.putString("class", ((Class<?>) samples[position][0]).getName());
-                myIntent.putExtras(b);
-                startActivityForResult(myIntent, 1);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            }
-
-        } else {
-            Intent myIntent = new Intent(DashboardActivity.this,
-                    (Class<?>) samples[position][0]);
-            this.startActivity(myIntent);
-        }
-    }
-    
-    
-    // gets fileName from FilePicker and starts Map Activity with fileName as parameter
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (data == null){
-            return;
-        }
-        String fileName = data.getStringExtra("selectedFile");
-        String className = data.getStringExtra("class");
-        if(fileName != null && className != null){
-            try {
-                Intent myIntent = new Intent(DashboardActivity.this,
-                            Class.forName(className));
-    
-                Bundle b = new Bundle();
-                b.putString("selectedFile", fileName);
-                myIntent.putExtras(b);
-                this.startActivity(myIntent);
-            
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-            
-        }
         
+        /**
+         * Creating all buttons instances
+         * */
+        // Dashboard Map button
+        Button btn_mapview = (Button) findViewById(R.id.btn_mapview);
+         
+        // Dashboard POI Search button
+        Button btn_search = (Button) findViewById(R.id.btn_search);
+         
+        // Dashboard Map Drawer button
+        Button btn_mapdrawer = (Button) findViewById(R.id.btn_mapdrawer);
+         
+        // Dashboard Notes button
+        Button btn_notes = (Button) findViewById(R.id.btn_notes);
+         
+        // Dashboard About button
+        Button btn_about = (Button) findViewById(R.id.btn_about);
+         
+        // Dashboard Exit button
+        Button btn_exit = (Button) findViewById(R.id.btn_exit);
+        
+               /**
+         * Handling all button click events
+         * */
+         
+        // Listening to Map View button click
+        btn_mapview.setOnClickListener(new View.OnClickListener() {
+             
+            @Override
+            public void onClick(View view) {
+                // Launching Map View Screen
+                Intent i = new Intent(getApplicationContext(), GPSLocation.class);
+                startActivity(i);
+            }
+        });
+         
+       // Listening POI Search button click
+        btn_search.setOnClickListener(new View.OnClickListener() {
+             
+            @Override
+            public void onClick(View view) {
+                // Launching POI Search Screen
+                Intent i = new Intent(getApplicationContext(), AddressSearch.class);
+                startActivity(i);
+            }
+        });
+         
+        // Listening mapdrawer button click
+        btn_mapdrawer.setOnClickListener(new View.OnClickListener() {
+             
+            @Override
+            public void onClick(View view) {
+                // Launching mapdrawer Screen
+                Intent i = new Intent(getApplicationContext(), MapDrawerActivity.class);
+                startActivity(i);
+            }
+        });
+         
+        // Listening to notebook button click
+        btn_notes.setOnClickListener(new View.OnClickListener() {
+             
+            @Override
+            public void onClick(View view) {
+                // Launching notebook Screen
+                Intent i = new Intent(getApplicationContext(), NotesActivity.class);
+                startActivity(i);
+            }
+        });
+         
+        // Listening to About button click
+        btn_about.setOnClickListener(new View.OnClickListener() {
+             
+            @Override
+            public void onClick(View view) {
+                // Launching About Screen
+                Intent i = new Intent(getApplicationContext(), AboutActivity.class);
+                startActivity(i);
+            }
+        });
+         
+        // Listening to Exit button click
+        btn_exit.setOnClickListener(new View.OnClickListener() {
+             
+            @Override
+            public void onClick(View view) {
+                //  Exit
+               finish();
+            System.exit(0);
+            }
+        });
     }
-    
 }
