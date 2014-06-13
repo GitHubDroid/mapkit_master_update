@@ -8,6 +8,7 @@
   
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
  
@@ -45,7 +46,8 @@
         <activity android:name="com.promptnet.mobiledev.mapkit.AboutActivity"></activity>
         <activity android:name="com.promptnet.mobiledev.mapkit.mapdrawer.MapDrawerActivity"></activity>
         <activity android:name="com.promptnet.mobiledev.mapkit.GPSLocation"></activity>
-        
+        <activity android:name="com.promptnet.mobiledev.mapkit.notes.NotesActivity"></activity>
+              
         <activity
     android:name="com.promptnet.mobiledev.mapquest.MapQuestSearchQuery"
     android:exported="false">
@@ -69,6 +71,35 @@
                 android:name="android.app.default_searchable"
                 android:value="com.promptnet.mobiledev.mapquest.MapQuestSearchQuery" />
 	</activity>
+	
+	        <activity
+            android:name="com.ipaulpro.afilechooser.FileChooserActivity"
+            android:enabled="@bool/use_activity"
+            android:exported="true"
+            android:icon="@drawable/ic_chooser"
+            android:label="@string/choose_pdfmap"
+            android:theme="@style/ChooserTheme" >
+            <intent-filter>
+                <action android:name="android.intent.action.GET_CONTENT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.OPENABLE" />
+
+                <data android:mimeType="*/*" />
+            </intent-filter>
+        </activity>
+
+        <provider
+            android:name="com.ianhanniballake.localstorage.LocalStorageProvider"
+            android:authorities="com.ianhanniballake.localstorage.documents"
+            android:enabled="@bool/use_provider"
+            android:exported="true"
+            android:grantUriPermissions="true"
+            android:permission="android.permission.MANAGE_DOCUMENTS" >
+            <intent-filter>
+                <action android:name="android.content.action.DOCUMENTS_PROVIDER" />
+            </intent-filter>
+        </provider>
         	
     </application>
 

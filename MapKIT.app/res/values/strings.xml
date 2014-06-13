@@ -5,6 +5,8 @@
     <string name="search_label">Search</string>
 	<string name="search_hint">Address</string>
 	<string name="search_invoke">Search</string>
+	<string name="choose_pdfmap">Choose PDF Map</string>
+	 <string name="chooser_title">File Browser</string>
 
 
 </resources>

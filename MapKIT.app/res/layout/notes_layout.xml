@@ -15,7 +15,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:padding="15dip"
-            android:text="Map Drawer"
+            android:text="Notes"
             android:textColor="#ff29549f"
             android:textSize="25dip"
             android:textStyle="bold" />
