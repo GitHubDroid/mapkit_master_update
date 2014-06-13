@@ -26,6 +26,7 @@
 
     <application
         android:allowBackup="true"
+        android:launchMode="singleTask"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name">
         <activity
