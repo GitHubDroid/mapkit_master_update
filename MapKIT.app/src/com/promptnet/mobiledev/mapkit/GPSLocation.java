@@ -2,6 +2,7 @@ package com.promptnet.mobiledev.mapkit;
 
 import java.io.File;
 import java.io.IOException;
+//import java.io.InputStream;
 
 import org.mapsforge.map.reader.MapDatabase;
 import org.mapsforge.map.reader.header.FileOpenResult;
@@ -31,44 +32,30 @@ import com.nutiteq.components.Range;
 import com.nutiteq.datasources.raster.MBTilesRasterDataSource;
 import com.nutiteq.datasources.raster.MapsforgeRasterDataSource;
 import com.nutiteq.geometry.Marker;
+//import com.nutiteq.geometry.NMLModel;
 import com.nutiteq.log.Log;
+//import com.nutiteq.nmlpackage.NMLPackage;
 import com.nutiteq.projections.EPSG3857;
 import com.nutiteq.projections.Projection;
 import com.nutiteq.rasterlayers.RasterLayer;
 import com.nutiteq.renderprojections.RenderProjection;
 import com.nutiteq.style.MarkerStyle;
+//import com.nutiteq.style.ModelStyle;
+//import com.nutiteq.style.StyleSet;
 import com.nutiteq.ui.DefaultLabel;
 import com.nutiteq.ui.Label;
 import com.nutiteq.utils.UnscaledBitmapLoader;
 import com.nutiteq.vectorlayers.MarkerLayer;
+//import com.nutiteq.vectorlayers.NMLModelLayer;
 import com.promptnet.mobiledev.mapkit.maplisteners.MyLocationMapEventListener;
 
-/**
- * Shows animated location on map, and fixed drivetime region around user location
- * 
- * Animated location uses Android location API to get coordinates, and accuracy. 
- * Animation is painted in MyLocationMapEventListener.onDrawFrameBefore3D() method using OpenGL.
- * 
- * Additional classes:
- *  maplisteners.MyLocationMapEventListener - called for map updates
- *   MyLocationMapEventListener.MyLocationCircle - knows user location and can do OpenGL drawing for specific frame
- *  
- * Used layer(s):
- *  RasterLayer with TMS tile source for base map
- *  DriveTimeRegionLayer - Vector layer which requests drivetime from Nutiteq demo server, provided coordinates and drive time value
- *      Drive time is shown as polygon on map. Provided coordinates are user GPS location coordinates, 
- *      Drive time value is selected by user with a Seekbar control on map
- *      During data loading progress indicator is shown in application header, using FEATURE_INDETERMINATE_PROGRESS
- * 
- * 
- *
- */
 
 public class GPSLocation extends Activity {
 
 	private MapView mapView;
     private LocationListener locationListener;
     ImageButton myLocationButton;
+//    NMLModel locationMarkerModel;
 
 
     @Override
@@ -136,6 +123,7 @@ public class GPSLocation extends Activity {
         RasterLayer mapLayer = new RasterLayer(dataSource, 1044);
         mapView.getLayers().setBaseLayer(mapLayer);
         
+             
         adjustMapDpi();
         
                
@@ -245,6 +233,7 @@ public class GPSLocation extends Activity {
             }
         });
         
+                
         ImageButton myLocationButton = (ImageButton) findViewById(R.id.my_gps_location);
         myLocationButton.setOnClickListener(new View.OnClickListener() {
         	@Override 	
@@ -253,7 +242,29 @@ public class GPSLocation extends Activity {
             initGps(((MyLocationMapEventListener) mapView.getOptions().getMapListener()).getLocationCircle());
         	}
         });
-    
+        
+     // 3d object
+        // define style for 3D to define minimum zoom = 0
+//        ModelStyle modelMarkerStyle = ModelStyle.builder().build();
+//        StyleSet<ModelStyle> modelStyleSet = new StyleSet<ModelStyle>(modelMarkerStyle);
+//
+//        // create layer and an model
+//        NMLModelLayer locationMarkerLayer = new NMLModelLayer(new EPSG3857());
+//        try {
+//            InputStream is = this.getResources().openRawResource(R.raw.man3d);
+//            NMLPackage.Model nmlModel = NMLPackage.Model.parseFrom(is);
+//            // set initial position for the milk truck
+//            locationMarkerModel = new NMLModel(mapPos, null, modelStyleSet, nmlModel, null);
+//            // set size, 10 is clear oversize, but this makes it visible
+//            locationMarkerModel.setScale(new Vector3D(50, 50, 50));
+//            locationMarkerLayer.add(locationMarkerModel);
+//            mapView.getLayers().addLayer(locationMarkerLayer);
+//
+//        }
+//        catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    
     }  
 
 

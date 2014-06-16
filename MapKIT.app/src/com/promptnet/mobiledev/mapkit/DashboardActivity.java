@@ -16,12 +16,11 @@ public class DashboardActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dashboard_layout);
-                 
-        
-        
+                    
         /**
          * Creating all buttons instances
          * */
+        
         // Dashboard Map button
         Button btn_mapview = (Button) findViewById(R.id.btn_mapview);
          
